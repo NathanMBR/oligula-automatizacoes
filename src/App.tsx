@@ -4,6 +4,7 @@ import {
   HeaderProvider,
   ReactRouterProvider
 } from './providers'
+import { UpdateModal } from './components'
 
 import '@mantine/core/styles.css'
 
@@ -13,6 +14,8 @@ export const App = () => {
       <PreloadProvider>
         <HeaderProvider>
           <ReactRouterProvider />
+
+          <UpdateModal />
         </HeaderProvider>
       </PreloadProvider>
     </MantineProvider>
