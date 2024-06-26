@@ -28,7 +28,7 @@
     },
     "updater": {
       "active": true,
-      "dialog": true,
+      "dialog": false,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDg2RDA0QzQxOUFBMkY0OUMKUldTYzlLS2FRVXpRaHBYZnBSUitEandMWGFrUDdjbTlRa1R0UTVab1YvRzJPYXhQNXhsL2lGelMK",
       "endpoints": [
         "https://github.com/NathanMBR/oligula-automatizacoes/releases/latest/download/latest.json"
