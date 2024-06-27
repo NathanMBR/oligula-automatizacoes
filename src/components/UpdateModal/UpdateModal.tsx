@@ -9,6 +9,7 @@ import {
 } from '@mantine/core'
 import {
   useContext,
+  useEffect,
   useState
 } from 'react'
 
@@ -28,6 +29,13 @@ export const UpdateModal = () => {
   }
 
   const isUpdating = update.status === 'PENDING'
+
+  useEffect(() => {
+    return () => {
+      if (update.unlisten)
+        update.unlisten()
+    }
+  }, [])
 
   return (
     <Modal.Root
