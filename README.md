@@ -2,8 +2,6 @@
 
 Desktop automation app made with React, TypeScript, Tauri & Rust
 
-
-
 ## Setup
 
 ### Requirements
