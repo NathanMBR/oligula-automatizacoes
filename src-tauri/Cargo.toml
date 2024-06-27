@@ -1,8 +1,8 @@
 [package]
 name = "oligula-automatizacoes"
 version = "1.0.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "Desktop automation app made with React, TypeScript, Tauri & Rust"
+authors = ["Nathan Murillo de Oliveira"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
