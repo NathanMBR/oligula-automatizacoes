@@ -1,41 +1,56 @@
 import {
-  Button,
-  Group,
-  Loader,
   Modal,
-  Text,
   Title,
   Transition
 } from '@mantine/core'
 import {
   useContext,
-  useEffect,
-  useState
+  useState,
+  type ReactElement
 } from 'react'
 
 import { PreloadContext } from '../../providers'
 
+import { AvailableBody } from './AvailableBody'
+import { UpdatingBody } from './UpdatingBody'
+import { SuccessBody } from './SuccessBody'
+import { FailureBody } from './FailureBody'
+
 export const UpdateModal = () => {
+  type UpdateState =
+    'AVAILABLE' |
+    'UPDATING' |
+    'SUCCESS' |
+    'FAILURE'
+
   const { update } = useContext(PreloadContext)
 
-  const [open, isOpen] = useState<boolean>(update.available)
+  const [open, isOpen] = useState(update.available)
+  const [updateState, setUpdateState] = useState<UpdateState>('AVAILABLE')
 
   const handleClose = () => isOpen(false)
 
-  const handleUpdate = async () => {
-    await update.execute()
+  const handleUpdate = () => {
+    setUpdateState('UPDATING')
 
-    isOpen(false)
+    update.execute()
+      .then(success => setUpdateState(success ? 'SUCCESS' : 'FAILURE'))
   }
 
-  const isUpdating = update.status === 'PENDING'
+  const isUpdating = updateState === 'UPDATING'
 
-  useEffect(() => {
-    return () => {
-      if (update.unlisten)
-        update.unlisten()
-    }
-  }, [])
+  const modalBodies: Record<UpdateState, ReactElement> = {
+    AVAILABLE: <AvailableBody
+      handleClose={handleClose}
+      handleUpdate={handleUpdate}
+    />,
+
+    UPDATING: <UpdatingBody />,
+
+    SUCCESS: <SuccessBody handleClose={handleClose} />,
+
+    FAILURE: <FailureBody handleClose={handleClose} />
+  }
 
   return (
     <Modal.Root
@@ -53,9 +68,7 @@ export const UpdateModal = () => {
             <Title order={3}>Atualização disponível</Title>
           </Modal.Title>
 
-          <Transition
-            mounted={!isUpdating}
-          >
+          <Transition mounted={!isUpdating}>
             {
               styles => <Modal.CloseButton style={styles} disabled={isUpdating} />
             }
@@ -64,33 +77,8 @@ export const UpdateModal = () => {
 
         <Modal.Body>
           {
-            isUpdating
-              ? <Text>Baixando atualização...</Text>
-              : <>
-                <Text>Uma nova versão está disponível.</Text>
-                <Text fw={500}>Gostaria de baixá-la?</Text>
-              </>
+            modalBodies[updateState]
           }
-
-          <Group mt='md' justify='flex-end'>
-            <Button
-              variant='default'
-              onClick={handleClose}
-              disabled={isUpdating}>
-              Não
-            </Button>
-
-            <Button
-              onClick={handleUpdate}
-              disabled={isUpdating}
-            >
-              {
-                isUpdating
-                  ? <Loader size={20} />
-                  : 'Sim'
-              }
-            </Button>
-          </Group>
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>
