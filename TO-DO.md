@@ -6,16 +6,7 @@ All items are ordered by priority.
 
 ### General
 
-- Check if it's possible to fetch updates from a private repository using some kind of key or access token
-- Stable versions should only check for stable updates; same for unstable
-
-## Update Resume Screen
-
-### General
-
-- Pops up after a new update occurs
-- Can be read anytime at settings menu
-- Displays data from file located at `/public` folder
+- Fix the modal not changing the state to "updating" after clicking yes
 
 ## Automator
 
