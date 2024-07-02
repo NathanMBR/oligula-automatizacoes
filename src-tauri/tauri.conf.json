@@ -15,6 +15,13 @@
       "os": {
         "all": true
       },
+      "fs": {
+        "all": true,
+        "scope": [
+          "$CONFIG/*",
+          "$APPCONFIG/*"
+        ]
+      },
       "window": {
         "all": true
       },
