@@ -17,20 +17,25 @@ pub enum MouseButton {
 }
 
 #[tauri::command(async)]
-fn move_mouse_to(position: MousePosition) -> bool {
-    match autopilot::mouse::move_to(Point::new(position.x, position.y)) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
-}
-
-#[tauri::command(async)]
 fn get_mouse_position() -> MousePosition {
     let mouse_point = autopilot::mouse::location();
 
     MousePosition {
         x: mouse_point.x,
         y: mouse_point.y,
+    }
+}
+
+#[tauri::command(async)]
+fn check_mouse_position(position: MousePosition) -> bool {
+    autopilot::screen::is_point_visible(Point::new(position.x, position.y))
+}
+
+#[tauri::command(async)]
+fn move_mouse_to(position: MousePosition) -> bool {
+    match autopilot::mouse::move_to(Point::new(position.x, position.y)) {
+        Ok(_) => true,
+        Err(_) => false,
     }
 }
 
@@ -55,6 +60,7 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_mouse_position,
+            check_mouse_position,
             move_mouse_to,
             click,
             write
