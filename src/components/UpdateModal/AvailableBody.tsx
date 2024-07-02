@@ -45,7 +45,7 @@ export const AvailableBody = (props: AvailableBodyProps) => {
           variant='default'
           onClick={() => {
             if (avoidUpdateMessage)
-              return app.setSetting('showUpdateNotification', false)
+              return app.settings.set({ showUpdateNotification: false })
                 .then(handleClose)
 
             handleClose()

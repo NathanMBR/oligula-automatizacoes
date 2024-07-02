@@ -10,15 +10,15 @@ import {
 } from '@mantine/core'
 import {
   app,
-  path,
   updater,
   process,
   os,
   fs
 } from '@tauri-apps/api'
 
-type AppSettings = {
+type AppSettingsData = {
   showUpdateNotification: boolean
+  timeBetweenStepsInMs: number
 }
 
 /* eslint-disable no-console */
@@ -29,30 +29,31 @@ const defaultPreloadData = {
 
   app: {
     version: 'unknown',
-    configDir: '',
     settings: {
-      showUpdateNotification: true
-    } as AppSettings,
-    setSetting: async (key: keyof AppSettings, _value: AppSettings[typeof key]): Promise<boolean> => Promise.resolve(false)
-  },
+      data: {
+        showUpdateNotification: true,
+        timeBetweenStepsInMs: 1000
+      } as AppSettingsData,
+      set: async (_data: Partial<AppSettingsData>): Promise<boolean> => Promise.resolve(false)
+    },
+    update: {
+      available: false,
+      execute: async () => {
+        try {
+          const { shouldUpdate } = await updater.checkUpdate()
+          if (!shouldUpdate)
+            return false
 
-  update: {
-    available: false,
-    execute: async () => {
-      try {
-        const { shouldUpdate } = await updater.checkUpdate()
-        if (!shouldUpdate)
+          await updater.installUpdate()
+          await process.relaunch()
+
+          return true
+        } catch (error) {
+          console.error('Failed to execute update:')
+          console.error(error)
+
           return false
-
-        await updater.installUpdate()
-        await process.relaunch()
-
-        return true
-      } catch (error) {
-        console.error('Failed to execute update:')
-        console.error(error)
-
-        return false
+        }
       }
     }
   }
@@ -72,10 +73,9 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
   const [OsType, setOsType] = useState(defaultPreloadData.os.type)
 
   const [appVersion, setAppVersion] = useState(defaultPreloadData.app.version)
-  const [appConfigDir, setAppConfigDir] = useState(defaultPreloadData.app.configDir)
-  const [appSettings, setAppSettings] = useState(defaultPreloadData.app.settings)
+  const [appSettingsData, setAppSettingsData] = useState<AppSettingsData>(defaultPreloadData.app.settings.data)
 
-  const [updateAvailable, setUpdateAvailable] = useState(false)
+  const [appUpdateAvailable, setAppUpdateAvailable] = useState(false)
 
   const CONFIG_FILE = 'settings.json'
 
@@ -96,17 +96,6 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
       setAppVersion(version)
     } catch (error) {
       console.error('Failed to load app version:')
-      console.error(error)
-    }
-  }
-
-  const loadConfigPath = async () => {
-    try {
-      const configDirRaw = await path.configDir()
-      const configDir = await path.join(configDirRaw, 'oligula-automatizacoes')
-      setAppConfigDir(configDir)
-    } catch (error) {
-      console.error('Failed to load app config path:')
       console.error(error)
     }
   }
@@ -140,8 +129,8 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
       console.log('Loading existent settings file...')
 
       const rawSettings = await fs.readTextFile(CONFIG_FILE, { dir: BaseDirectory.AppConfig })
-      const settings = JSON.parse(rawSettings) as AppSettings
-      setAppSettings(settings)
+      const settings = JSON.parse(rawSettings) as AppSettingsData
+      setAppSettingsData(settings)
     } catch (error) {
       console.error('Failed to load app settings data:')
       console.error(error)
@@ -166,7 +155,7 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
         console.log(`Release date: ${manifest.date}`)
       }
 
-      setUpdateAvailable(shouldUpdate)
+      setAppUpdateAvailable(shouldUpdate)
     } catch (error) {
       console.error('Failed to check for updates:')
       console.error(error)
@@ -181,7 +170,6 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
       Promise.all([
         loadOsType(),
         loadVersion(),
-        loadConfigPath(),
         loadSettings(),
         checkUpdate()
       ])
@@ -205,43 +193,43 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
 
       app: {
         version: appVersion,
-        configDir: appConfigDir,
-        settings: appSettings,
-        setSetting: async (key, value) => {
-          try {
-            const settings = {
-              ...appSettings,
-              [key]: value
-            }
-
-            setAppSettings(settings)
-
-            await fs.writeTextFile(
-              {
-                path: CONFIG_FILE,
-                contents: JSON.stringify(settings, null, 2)
-              },
-
-              {
-                dir: BaseDirectory.AppConfig
+        settings: {
+          data: appSettingsData,
+          set: async data => {
+            try {
+              const settings = {
+                ...defaultPreloadData.app.settings.data,
+                ...data
               }
-            )
 
-            return true
-          } catch (error) {
-            /* eslint-disable no-console */
-            console.error(`Failed to set app setting "${key}":`)
-            console.error(error)
-            /* eslint-enable no-console */
+              setAppSettingsData(settings)
 
-            return false
+              await fs.writeTextFile(
+                {
+                  path: CONFIG_FILE,
+                  contents: JSON.stringify(settings, null, 2)
+                },
+
+                {
+                  dir: BaseDirectory.AppConfig
+                }
+              )
+
+              return true
+            } catch (error) {
+              /* eslint-disable no-console */
+              console.error('Failed to set app settings:')
+              console.error(error)
+              /* eslint-enable no-console */
+
+              return false
+            }
           }
+        },
+        update: {
+          available: appUpdateAvailable,
+          execute: defaultPreloadData.app.update.execute
         }
-      },
-
-      update: {
-        available: updateAvailable,
-        execute: defaultPreloadData.update.execute
       }
     }}>
       {children}
