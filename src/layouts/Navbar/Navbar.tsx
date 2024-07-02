@@ -96,7 +96,15 @@ export const Navbar = (props: NavbarProps) => {
           <Group justify='center'>
             <ThemeSwitch />
 
-            <Settings />
+            <Link
+              to='/settings'
+              onClick={() => {
+                setPageTitle('Configurações')
+                setPageSubtitle('')
+              }}
+            >
+              <Settings />
+            </Link>
           </Group>
         </nav>
       </AppShell.Navbar>

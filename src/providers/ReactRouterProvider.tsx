@@ -6,6 +6,7 @@ import {
 import {
   HomePage,
   NotFoundPage,
+  SettingsPage,
   AutomatorPage
   // InmetroSealGeneratorPage,
   // SpreadsheetFormatterPage
@@ -16,6 +17,11 @@ const router = createBrowserRouter([
     path: '/',
     element: <HomePage />,
     errorElement: <NotFoundPage />
+  },
+
+  {
+    path: '/settings',
+    element: <SettingsPage />
   },
 
   {

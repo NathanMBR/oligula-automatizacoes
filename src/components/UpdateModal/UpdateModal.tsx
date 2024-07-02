@@ -23,9 +23,12 @@ export const UpdateModal = () => {
     'SUCCESS' |
     'FAILURE'
 
-  const { update } = useContext(PreloadContext)
+  const {
+    update,
+    app
+  } = useContext(PreloadContext)
 
-  const [open, isOpen] = useState(update.available)
+  const [open, isOpen] = useState(update.available && app.settings.showUpdateNotification)
   const [updateState, setUpdateState] = useState<UpdateState>('AVAILABLE')
 
   const handleClose = () => isOpen(false)
