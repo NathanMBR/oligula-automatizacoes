@@ -57,12 +57,8 @@ jobs:
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         with:
           tagName: v__VERSION__-unstable-${{ github.run_id }}-${{ github.run_attempt }}
-          releaseId: v__VERSION__-unstable-${{ github.run_id }}-${{ github.run_attempt }}
           releaseName: "Oligula Automatizações v__VERSION__-${{ github.run_id }}-${{ github.run_attempt }} (Instável)"
           releaseBody: 'Para baixar, veja a seção "Assets" abaixo (VERSÃO INSTÁVEL)'
-          releaseDraft: false
           prerelease: true
-          includeRelease: false
-          includeDebug: true
           includeUpdaterJson: true
           args: ${{ matrix.args }}
