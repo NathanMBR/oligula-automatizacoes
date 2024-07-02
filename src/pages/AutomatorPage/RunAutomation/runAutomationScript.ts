@@ -11,11 +11,14 @@ export type RunAutomationData = Pick<
   'hasVariable' |
   'getVariable' |
   'setVariable'
->
+> & {
+  globalTimeBetweenStepsInMs: number
+}
 
 /* eslint-disable no-await-in-loop */
 export const runAutomationScript = async (data: RunAutomationData) => {
   const {
+    globalTimeBetweenStepsInMs,
     steps,
     variables,
     hasVariable,
@@ -24,7 +27,7 @@ export const runAutomationScript = async (data: RunAutomationData) => {
   } = data
 
   for (const step of steps) {
-    await sleep(1000)
+    await sleep(globalTimeBetweenStepsInMs)
 
     if (step.type === 'move') {
       await invoke('move_mouse_to', { position: step.data })
@@ -102,6 +105,7 @@ export const runAutomationScript = async (data: RunAutomationData) => {
         }
 
         await runAutomationScript({
+          globalTimeBetweenStepsInMs,
           steps: step.data.steps,
           variables: {
             ...variables,
