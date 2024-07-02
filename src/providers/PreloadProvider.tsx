@@ -13,8 +13,13 @@ import {
   path,
   updater,
   process,
-  os
+  os,
+  fs
 } from '@tauri-apps/api'
+
+type AppSettings = {
+  showUpdateNotification: boolean
+}
 
 /* eslint-disable no-console */
 const defaultPreloadData = {
@@ -24,7 +29,11 @@ const defaultPreloadData = {
 
   app: {
     version: 'unknown',
-    configDir: ''
+    configDir: '',
+    settings: {
+      showUpdateNotification: true
+    } as AppSettings,
+    setSetting: async (key: keyof AppSettings, _value: AppSettings[typeof key]): Promise<boolean> => Promise.resolve(false)
   },
 
   update: {
@@ -56,6 +65,7 @@ export type PreloadProviderProps = Required<PropsWithChildren>
 
 export const PreloadProvider = (props: PreloadProviderProps) => {
   const { children } = props
+  const { BaseDirectory } = fs
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -63,8 +73,11 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
 
   const [appVersion, setAppVersion] = useState(defaultPreloadData.app.version)
   const [appConfigDir, setAppConfigDir] = useState(defaultPreloadData.app.configDir)
+  const [appSettings, setAppSettings] = useState(defaultPreloadData.app.settings)
 
   const [updateAvailable, setUpdateAvailable] = useState(false)
+
+  const CONFIG_FILE = 'settings.json'
 
   /* eslint-disable no-console */
   const loadOsType = async () => {
@@ -89,10 +102,48 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
 
   const loadConfigPath = async () => {
     try {
-      const configDir = await path.configDir()
+      const configDirRaw = await path.configDir()
+      const configDir = await path.join(configDirRaw, 'oligula-automatizacoes')
       setAppConfigDir(configDir)
     } catch (error) {
       console.error('Failed to load app config path:')
+      console.error(error)
+    }
+  }
+
+  const loadSettings = async () => {
+    try {
+      const doesDirExist = await fs.exists('', { dir: BaseDirectory.AppConfig })
+      if (!doesDirExist)
+        await fs.createDir('', { dir: BaseDirectory.AppConfig, recursive: true })
+
+      const doesConfigFileExist = await fs.exists(CONFIG_FILE, { dir: BaseDirectory.AppConfig })
+      if (!doesConfigFileExist) {
+        console.log('Generating default settings file...')
+
+        await fs.writeTextFile(
+          {
+            path: CONFIG_FILE,
+            contents: JSON.stringify(defaultPreloadData.app.settings, null, 2)
+          },
+
+          {
+            dir: fs.BaseDirectory.AppConfig
+          }
+        )
+
+        console.log('Settings file generated successfully!')
+
+        return
+      }
+
+      console.log('Loading existent settings file...')
+
+      const rawSettings = await fs.readTextFile(CONFIG_FILE, { dir: BaseDirectory.AppConfig })
+      const settings = JSON.parse(rawSettings) as AppSettings
+      setAppSettings(settings)
+    } catch (error) {
+      console.error('Failed to load app settings data:')
       console.error(error)
     }
   }
@@ -131,6 +182,7 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
         loadOsType(),
         loadVersion(),
         loadConfigPath(),
+        loadSettings(),
         checkUpdate()
       ])
         .finally(() => setIsLoading(false))
@@ -153,7 +205,38 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
 
       app: {
         version: appVersion,
-        configDir: appConfigDir
+        configDir: appConfigDir,
+        settings: appSettings,
+        setSetting: async (key, value) => {
+          try {
+            const settings = {
+              ...appSettings,
+              [key]: value
+            }
+
+            setAppSettings(settings)
+
+            await fs.writeTextFile(
+              {
+                path: CONFIG_FILE,
+                contents: JSON.stringify(settings, null, 2)
+              },
+
+              {
+                dir: BaseDirectory.AppConfig
+              }
+            )
+
+            return true
+          } catch (error) {
+            /* eslint-disable no-console */
+            console.error(`Failed to set app setting "${key}":`)
+            console.error(error)
+            /* eslint-enable no-console */
+
+            return false
+          }
+        }
       },
 
       update: {
