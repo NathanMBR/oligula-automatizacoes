@@ -7,14 +7,19 @@ import {
   Text
 } from '@mantine/core'
 import {
+  IconAlertCircle,
+  IconPlayerRecordFilled
+} from '@tabler/icons-react'
+import {
+  invoke,
+  notification,
+  path,
+  window as tauriWindow
+} from '@tauri-apps/api'
+import {
   useContext,
   useState
 } from 'react'
-import { IconPlayerRecordFilled } from '@tabler/icons-react'
-import { invoke } from '@tauri-apps/api'
-import { appWindow } from '@tauri-apps/api/window'
-import * as notification from '@tauri-apps/api/notification'
-import * as path from '@tauri-apps/api/path'
 
 import {
   checkMousePositionEquality,
@@ -36,9 +41,11 @@ export type MoveStepProps = {
 
 export const MoveStep = (props: MoveStepProps) => {
   const { onClose } = props
+  const { appWindow } = tauriWindow
 
   const [mousePosition, setMousePosition] = useState({ x: -1, y: -1 })
   const [isCapturingMousePosition, setIsCapturingMousePosition] = useState(false)
+  const [positionError, setPositionError] = useState('')
 
   const { addStep } = useContext(AutomationContext)
 
@@ -49,7 +56,8 @@ export const MoveStep = (props: MoveStepProps) => {
     !Number.isNaN(mousePosition.y) &&
     mousePosition.x >= 0 &&
     mousePosition.y >= 0 &&
-    !isCapturingMousePosition
+    !isCapturingMousePosition &&
+    !positionError
 
   const handleMousePositionCapture = async () => {
     const mousePositions: Array<MousePosition> = []
@@ -64,13 +72,14 @@ export const MoveStep = (props: MoveStepProps) => {
       if (mousePositions.length >= MOUSE_SAMPLES)
         mousePositions.shift()
 
-      const mousePosition = await invoke('get_mouse_position') as MousePosition
+      const mousePosition = await invoke<MousePosition>('get_mouse_position')
       mousePositions.push(mousePosition)
     }
     /* eslint-enable no-await-in-loop */
 
     const capturedMousePosition = mousePositions[0]!
     setMousePosition(capturedMousePosition)
+    setPositionError('')
 
     const isWindowMinimized = await appWindow.isMinimized()
     if (isWindowMinimized) {
@@ -91,7 +100,15 @@ export const MoveStep = (props: MoveStepProps) => {
     setIsCapturingMousePosition(false)
   }
 
-  const addMoveStep = () => {
+  const addMoveStep = async () => {
+    const isPositionValid = await invoke<boolean>(
+      'check_mouse_position',
+      { position: mousePosition }
+    )
+
+    if (!isPositionValid)
+      return setPositionError('Posição fora dos limites da tela')
+
     addStep(
       {
         id: generateRandomID(),
@@ -116,8 +133,12 @@ export const MoveStep = (props: MoveStepProps) => {
             min={0}
             allowDecimal={false}
             allowNegative={false}
+            error={!!positionError}
             value={mousePosition.x >= 0 ? mousePosition.x : undefined}
-            onChange={value => setMousePosition({ ...mousePosition, x: Number(value) })}
+            onChange={value => {
+              setMousePosition({ ...mousePosition, x: Number(value) })
+              setPositionError('')
+            }}
           />
 
           <NumberInput
@@ -127,10 +148,29 @@ export const MoveStep = (props: MoveStepProps) => {
             min={0}
             allowDecimal={false}
             allowNegative={false}
+            error={!!positionError}
             value={mousePosition.y >= 0 ? mousePosition.y : undefined}
-            onChange={value => setMousePosition({ ...mousePosition, y: Number(value) })}
+            onChange={value => {
+              setMousePosition({ ...mousePosition, y: Number(value) })
+              setPositionError('')
+            }}
           />
         </Group>
+
+        {
+          positionError
+            ? <Group justify='center' gap={8}>
+              <IconAlertCircle size={16} color='var(--mantine-color-error)' />
+
+              <Text
+                fw={500}
+                size='sm'
+                ta='center'
+                c='var(--mantine-color-error)'
+              >{positionError}</Text>
+            </Group>
+            : null
+        }
 
         <Divider label='ou' />
 
