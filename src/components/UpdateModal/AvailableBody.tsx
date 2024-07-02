@@ -1,8 +1,15 @@
 import {
   Button,
   Group,
+  Switch,
   Text
 } from '@mantine/core'
+import {
+  useContext,
+  useState
+} from 'react'
+
+import { PreloadContext } from '../../providers'
 
 export type AvailableBodyProps = {
   handleClose: () => void
@@ -15,15 +22,34 @@ export const AvailableBody = (props: AvailableBodyProps) => {
     handleUpdate
   } = props
 
+  const { app } = useContext(PreloadContext)
+
+  const [avoidUpdateMessage, setAvoidUpdateMessage] = useState(false)
+
   return (
     <>
       <Text>Uma nova versão está disponível.</Text>
       <Text fw={500}>Você gostaria de baixá-la?</Text>
 
-      <Group mt='md' justify='flex-end'>
+      <Switch
+        label='Não exibir esta notificação novamente'
+        mt='md'
+        checked={avoidUpdateMessage}
+        onChange={event => {
+          setAvoidUpdateMessage(event.target.checked)
+        }}
+      />
+
+      <Group mt='xl' justify='flex-end'>
         <Button
           variant='default'
-          onClick={handleClose}
+          onClick={() => {
+            if (avoidUpdateMessage)
+              return app.setSetting('showUpdateNotification', false)
+                .then(handleClose)
+
+            handleClose()
+          }}
         >
           Não
         </Button>
