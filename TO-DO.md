@@ -2,18 +2,12 @@
 
 All items are ordered by priority.
 
-## Auto Updater (HIGHEST PRIORITY)
-
-### General
-
-- Fix the modal not changing the state to "updating" after clicking yes
-
 ## Automator
 
 ### Schema Saving System (SSS)
 
 - System to save steps and variables in a JSON file
-- List all saved files (from Tauri's official data folder)
+- List all saved files
 - Import / Export files (import copies from other folder to data folder; export does the opposite)
 - Remove test steps and variables after implementing
 
@@ -26,10 +20,6 @@ All items are ordered by priority.
 - Move mouse: Add "smooth movement" option
 
 ## Settings Menu
-
-### Auto Updater
-
-- Configure key/access token (if possible)
 
 ### Automator
 
