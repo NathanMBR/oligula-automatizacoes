@@ -2,6 +2,12 @@
 
 All items are ordered by priority.
 
+## App Window
+
+### Title
+
+- Change window title when changing pages (use `appWindow.setTitle()` Tauri method)
+
 ## Automator
 
 ### Schema Saving System (SSS)
@@ -9,21 +15,19 @@ All items are ordered by priority.
 - System to save steps and variables in a JSON file
 - List all saved files
 - Import / Export files (import copies from other folder to data folder; export does the opposite)
-- Remove test steps and variables after implementing
 
 ### Steps
 
-- Disable "Run Automation" button while automation is running (add spinner)
 - Add keyboard combination press step (`Ctrl + Shift + K` for example)
 - Add conditional step (`if`, `else`, `else if`)
-- Move mouse: Check if mouse position is valid (use `autopilot::screen.is_point_visible`)
+- Add sleep step
 - Move mouse: Add "smooth movement" option
 
 ## Settings Menu
 
 ### Automator
 
-- Configure time between steps execution
+- Move mouse: add "capture delay" setting (default to 5s)
 
 ## Spreadsheet Formatter
 
