@@ -5,6 +5,8 @@ import {
   Title,
   Text
 } from '@mantine/core'
+import { appWindow } from '@tauri-apps/api/window'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 import { Navbar } from '../../layouts'
@@ -13,6 +15,10 @@ import { NotFoundIllustration } from './NotFoundIllustration'
 import classes from './NotFoundPage.module.css'
 
 export const NotFoundPage = () => {
+  useEffect(() => {
+    appWindow.setTitle('Oligula Automatizações')
+  }, [])
+
   return (
     <Navbar>
       <Container className={classes.root}>

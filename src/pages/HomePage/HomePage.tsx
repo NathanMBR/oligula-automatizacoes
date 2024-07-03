@@ -5,12 +5,18 @@ import {
   Stack,
   Title
 } from '@mantine/core'
+import { appWindow } from '@tauri-apps/api/window'
+import { useEffect } from 'react'
 
 import { Navbar } from '../../layouts'
 
 import classes from './HomePage.module.css'
 
 export const HomePage = () => {
+  useEffect(() => {
+    appWindow.setTitle('Oligula Automatizações | Início')
+  }, [])
+
   return (
     <Navbar>
       <Center h='95vh'>

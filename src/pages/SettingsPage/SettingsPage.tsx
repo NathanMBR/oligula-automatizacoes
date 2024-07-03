@@ -7,8 +7,10 @@ import {
 } from '@mantine/core'
 import {
   useContext,
+  useEffect,
   useState
 } from 'react'
+import { appWindow } from '@tauri-apps/api/window'
 
 import {
   Header,
@@ -25,6 +27,10 @@ export const SettingsPage = () => {
   const ONE_SECOND_IN_MS = 1_000
 
   const portugueseNumberFormatter = new Intl.NumberFormat('pt-br')
+
+  useEffect(() => {
+    appWindow.setTitle('Oligula Automatizações | Configurações')
+  }, [])
 
   return (
     <Navbar>
