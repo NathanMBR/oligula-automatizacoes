@@ -52,7 +52,7 @@ export const RunAutomation = () => {
       icon={
         isRunningAutomation
           ? <Loader size={20} color='rgb(255, 255, 255, 1)' />
-          : <IconSettingsAutomation />
+          : <IconSettingsAutomation stroke={1.5} />
       }
     />
   )
