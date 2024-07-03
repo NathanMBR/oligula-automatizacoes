@@ -47,6 +47,7 @@ export const RunAutomation = () => {
   return (
     <FAB
       hidden={isHidden}
+      position={{ right: 96 }}
       onClick={handleAutomationRun}
       ActionIconProps={{ variant: 'filled', disabled: isDisabled }}
       icon={
