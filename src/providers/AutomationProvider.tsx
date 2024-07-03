@@ -32,129 +32,13 @@ const defaultAutomationData: AutomationData = {
   stageIndex: 0,
   setStageIndex: () => {},
 
-  steps: [
-    {
-      id: 1,
-      type: 'cycle',
-      data: {
-        iterable: 'list',
-        saveItemsAs: 'item',
-        steps: [
-          {
-            id: 4,
-            type: 'move',
-            data: {
-              x: 1280,
-              y: 540
-            }
-          },
-
-          {
-            id: 5,
-            type: 'click',
-            data: {
-              button: 'left'
-            }
-          },
-
-          {
-            id: 6,
-            type: 'write',
-            data: {
-              text: 'write test',
-              readFrom: ''
-            }
-          },
-
-          {
-            id: 2,
-            type: 'cycle',
-            data: {
-              iterable: 'item',
-              saveItemsAs: 'subitem',
-              steps: [
-                {
-                  id: 3,
-                  type: 'write',
-                  data: {
-                    text: '',
-                    readFrom: 'subitem'
-                  }
-                },
-
-                {
-                  id: 2345678,
-                  type: 'cycle',
-                  data: {
-                    iterable: 'any',
-                    saveItemsAs: 'any2',
-                    steps: []
-                  }
-                }
-              ]
-            }
-          },
-
-          {
-            id: 60,
-            type: 'write',
-            data: {
-              text: 'write test',
-              readFrom: ''
-            }
-          }
-        ]
-      }
-    },
-
-    {
-      id: 999,
-      type: 'write',
-      data: {
-        text: 'write test',
-        readFrom: ''
-      }
-    },
-
-    {
-      id: 998,
-      type: 'cycle',
-      data: {
-        iterable: 'no-steps',
-        saveItemsAs: 'item-no-steps',
-        steps: []
-      }
-    },
-
-    {
-      id: 300,
-      type: 'write',
-      data: {
-        text: '',
-        readFrom: 'subitem'
-      }
-    },
-
-    {
-      id: 301,
-      type: 'write',
-      data: {
-        text: '',
-        readFrom: 'subitem'
-      }
-    }
-  ],
+  steps: [],
   addStep: () => {},
   removeStep: () => {},
   getStep: () => undefined,
   getStepPositionString: () => '',
 
-  variables: {
-    list: {
-      ownerId: 0,
-      value: ['Lorem', 'ipsum', 'dolor', 'sit', 'amet']
-    }
-  },
+  variables: {},
   getVariable: () => undefined,
   setVariable: () => {},
   hasVariable: () => false,
