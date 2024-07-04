@@ -19,7 +19,9 @@
         "all": true,
         "scope": [
           "$CONFIG/*",
-          "$APPCONFIG/*"
+          "$APPCONFIG/*",
+          "$APPDATA/*",
+          "$APPDATA/automations/**/*"
         ]
       },
       "window": {
