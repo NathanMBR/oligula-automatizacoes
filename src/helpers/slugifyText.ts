@@ -1,4 +1,4 @@
-export const slugifyString = (text: string): string => text.normalize('NFD')
+export const slugifyText = (text: string): string => text.normalize('NFD')
   .split('')
   .filter(character => character.charCodeAt(0) <= 127)
   .join('')
