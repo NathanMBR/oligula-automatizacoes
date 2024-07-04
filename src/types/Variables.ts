@@ -1,6 +1,6 @@
-export type Variables = {
-  [variable: string]: {
-    ownerId: number
-    value: unknown
-  }
+type VariableData = {
+  ownerId: number
+  value: unknown
 }
+
+export type Variables = Record<string, VariableData>
