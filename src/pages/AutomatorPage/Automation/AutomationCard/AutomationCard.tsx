@@ -11,7 +11,7 @@ import {
   IconEdit,
   IconMaximize,
   IconMaximizeOff,
-  IconX
+  IconTrash
 } from '@tabler/icons-react'
 import type {
   ReactElement,
@@ -119,7 +119,7 @@ const AutomationCardBase = (props: AutomationCardProps) => {
             </ActionIcon>
 
             <ActionIcon {...actionIconProps} onClick={onRemove}>
-              <IconX {...iconProps} />
+              <IconTrash {...iconProps} />
             </ActionIcon>
           </Group>
         </Group>
