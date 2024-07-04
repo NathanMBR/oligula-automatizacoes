@@ -98,13 +98,16 @@ export const LoadAutomation = (props: LoadAutomationProps) => {
             }
           )
 
-        const storedAutomations = await fs.readDir(
+        // reads both files and directories - needs to be filtered
+        const storedAutomationsRaw = await fs.readDir(
           'automations',
           {
-            recursive: true,
+            recursive: false,
             dir: BaseDirectory.AppData
           }
         )
+
+        const storedAutomations = storedAutomationsRaw.filter(storedAutomation => !('children' in storedAutomation))
 
         const rawAutomations = await Promise.all(
           storedAutomations.map(
