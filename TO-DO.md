@@ -2,12 +2,6 @@
 
 All items are ordered by priority.
 
-## App Window
-
-### Title
-
-- Change window title when changing pages (use `appWindow.setTitle()` Tauri method)
-
 ## Automator
 
 ### Schema Saving System (SSS)
@@ -19,7 +13,7 @@ All items are ordered by priority.
 ### Steps
 
 - Add keyboard combination press step (`Ctrl + Shift + K` for example)
-- Add conditional step (`if`, `else`, `else if`)
+- Add conditional step (`if`, `else`, `else if`; check if types can be done using inheritance)
 - Add sleep step
 - Move mouse: Add "smooth movement" option
 
@@ -28,6 +22,10 @@ All items are ordered by priority.
 ### Automator
 
 - Move mouse: add "capture delay" setting (default to 5s)
+
+### Update
+
+- Add button to update
 
 ## Spreadsheet Formatter
 
