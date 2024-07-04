@@ -2,6 +2,7 @@ import {
   MantineProvider,
   PreloadProvider,
   HeaderProvider,
+  AutomationProvider,
   ReactRouterProvider
 } from './providers'
 import { UpdateModal } from './components'
@@ -13,9 +14,11 @@ export const App = () => {
     <MantineProvider>
       <PreloadProvider>
         <HeaderProvider>
-          <ReactRouterProvider />
+          <AutomationProvider>
+            <ReactRouterProvider />
 
-          <UpdateModal />
+            <UpdateModal />
+          </AutomationProvider>
         </HeaderProvider>
       </PreloadProvider>
     </MantineProvider>

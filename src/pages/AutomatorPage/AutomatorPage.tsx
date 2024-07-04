@@ -8,7 +8,6 @@ import {
   Navbar,
   Header
 } from '../../layouts'
-import { AutomationProvider } from '../../providers'
 
 import { Automation } from './Automation'
 import { NewStep } from './NewStep'
@@ -27,21 +26,19 @@ export const AutomatorPage = () => {
   }, [])
 
   return (
-    <AutomationProvider>
-      <Navbar selectedOption='Automatizador'>
-        <Header>
-          <Automation setIsNewStepOpen={setIsNewStepOpen} />
+    <Navbar selectedOption='Automatizador'>
+      <Header>
+        <Automation setIsNewStepOpen={setIsNewStepOpen} />
 
-          <RunAutomation />
+        <RunAutomation />
 
-          <AutomationStore />
+        <AutomationStore />
 
-          <NewStep
-            isOpen={isNewStepOpen}
-            onClose={() => setIsNewStepOpen(false)}
-          />
-        </Header>
-      </Navbar>
-    </AutomationProvider>
+        <NewStep
+          isOpen={isNewStepOpen}
+          onClose={() => setIsNewStepOpen(false)}
+        />
+      </Header>
+    </Navbar>
   )
 }
