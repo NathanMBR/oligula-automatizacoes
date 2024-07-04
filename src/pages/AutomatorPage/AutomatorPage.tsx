@@ -12,6 +12,7 @@ import { AutomationProvider } from '../../providers'
 
 import { Automation } from './Automation'
 import { NewStep } from './NewStep'
+import { AutomationStore } from './AutomationStore'
 import { RunAutomation } from './RunAutomation'
 
 export type AutomatorPageParams = {
@@ -31,12 +32,14 @@ export const AutomatorPage = () => {
         <Header>
           <Automation setIsNewStepOpen={setIsNewStepOpen} />
 
+          <RunAutomation />
+
+          <AutomationStore />
+
           <NewStep
             isOpen={isNewStepOpen}
             onClose={() => setIsNewStepOpen(false)}
           />
-
-          <RunAutomation />
         </Header>
       </Navbar>
     </AutomationProvider>
