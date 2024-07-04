@@ -18,6 +18,7 @@ export type AutomationData = {
   removeStep: (id: StepData['id']) => void
   getStep: (id: StepData['id']) => StepData | undefined
   getStepPositionString: (id: StepData['id']) => string
+  setSteps: (newSteps: Array<StepData>) => void
 
   variables: Variables
   getVariable: (name: string) => Variables[string] | undefined
@@ -26,6 +27,7 @@ export type AutomationData = {
   listVariables: () => Array<string>
   deleteVariable: (name: string) => void
   deleteVariablesByStepId: (id: number) => void
+  setVariables: (newVariables: Variables) => void
 }
 
 const defaultAutomationData: AutomationData = {
@@ -37,6 +39,7 @@ const defaultAutomationData: AutomationData = {
   removeStep: () => {},
   getStep: () => undefined,
   getStepPositionString: () => '',
+  setSteps: () => {},
 
   variables: {},
   getVariable: () => undefined,
@@ -44,7 +47,8 @@ const defaultAutomationData: AutomationData = {
   hasVariable: () => false,
   listVariables: () => [],
   deleteVariable: () => {},
-  deleteVariablesByStepId: () => {}
+  deleteVariablesByStepId: () => {},
+  setVariables: () => {}
 }
 
 export const AutomationContext = createContext(defaultAutomationData)
@@ -200,6 +204,7 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
   }
 
   const getVariable: AutomationData['getVariable'] = name => variables[name.toLowerCase()]
+
   const setVariable: AutomationData['setVariable'] = (name, value) => setVariables({ ...variables, [name.toLowerCase()]: value })
   const hasVariable: AutomationData['hasVariable'] = name => name.toLowerCase() in variables
   const listVariables: AutomationData['listVariables'] = () => Object.keys(variables)
@@ -243,6 +248,7 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
     removeStep,
     getStep,
     getStepPositionString,
+    setSteps,
 
     variables,
     getVariable,
@@ -250,7 +256,8 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
     hasVariable,
     listVariables,
     deleteVariable,
-    deleteVariablesByStepId
+    deleteVariablesByStepId,
+    setVariables
   }
 
   return (

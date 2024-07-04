@@ -64,7 +64,7 @@ export const AutomationStore = () => {
           </Tabs.List>
 
           <Tabs.Panel value='load'>
-            <LoadAutomation />
+            <LoadAutomation handleClose={() => setIsOpen(false)} />
           </Tabs.Panel>
 
           <Tabs.Panel value='save'>
