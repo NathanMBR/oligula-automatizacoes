@@ -202,6 +202,28 @@ export const parseStoredAutomation = (rawStoredAutomation: string): StoredAutoma
     )
       return null
 
+    const variables = Object.values(storedAutomation.data.variables)
+    for (const variable of variables) {
+      if (
+        typeof variable !== 'object' ||
+          variable === null ||
+          Array.isArray(variable)
+      )
+        return null
+
+      if (!('ownerId' in variable))
+        return null
+
+      if (typeof variable.ownerId !== 'number')
+        return null
+
+      if (Number.isNaN(variable.ownerId))
+        return null
+
+      if (!('value' in variable))
+        return null
+    }
+
     return storedAutomation
   } catch (_error) {
     return null
