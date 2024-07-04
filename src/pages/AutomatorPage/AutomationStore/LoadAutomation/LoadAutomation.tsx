@@ -13,7 +13,7 @@ import {
 import { fs } from '@tauri-apps/api'
 
 import { parseStoredAutomation } from './parseStoredAutomation'
-import type { StoredAutomation } from './StoredAutomation'
+import type { StoredAutomation } from '../StoredAutomation'
 
 export const LoadAutomation = () => {
   const { BaseDirectory } = fs

@@ -1,5 +1,5 @@
-import { StepTypes } from '../StepTypes'
-import type { StoredAutomation } from './StoredAutomation'
+import { StepTypes } from '../../StepTypes'
+import type { StoredAutomation } from '../StoredAutomation'
 
 const validateSteps = (steps: unknown): boolean => {
   if (!Array.isArray(steps))
