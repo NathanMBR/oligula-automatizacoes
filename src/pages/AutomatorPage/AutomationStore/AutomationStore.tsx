@@ -68,7 +68,7 @@ export const AutomationStore = () => {
           </Tabs.Panel>
 
           <Tabs.Panel value='save'>
-            <SaveAutomation />
+            <SaveAutomation handleClose={() => setIsOpen(false)} />
           </Tabs.Panel>
         </Tabs>
       </Modal>
