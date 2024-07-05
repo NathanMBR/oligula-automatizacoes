@@ -1,6 +1,16 @@
-type StepDefault = {
+/* eslint-disable no-use-before-define */
+export type StepDefaultData = {
   id: number
 }
+
+export type StepData = StepDefaultData & (
+  MoveStepData |
+  ClickStepData |
+  WriteStepData |
+  ReadFileStepData |
+  ParseStringStepData |
+  CycleStepData
+)
 
 export type MoveStepData = {
   type: 'move'
@@ -43,26 +53,11 @@ export type ParseStringStepData = {
   }
 }
 
-type ActionUnion =
-  MoveStepData |
-  ClickStepData |
-  WriteStepData |
-  ReadFileStepData |
-  ParseStringStepData
-
-export interface CycleStepData {
+export type CycleStepData = {
   type: 'cycle'
   data: {
     iterable: string
     saveItemsAs: string
-    steps: Array<(ActionUnion | CycleStepData) & StepDefault>
+    steps: Array<StepData>
   }
 }
-
-type StepUnion =
-  ActionUnion |
-  CycleStepData
-
-export type StepData =
-  StepDefault &
-  StepUnion
