@@ -107,6 +107,7 @@ export const Automation = (props: AutomationProps) => {
               setSteps([])
               setVariables({})
             }}
+            disabled={steps.length === 0}
             fullWidth
           >
             <IconTrash />
