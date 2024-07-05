@@ -1,21 +1,22 @@
 # To-do
 
-All items are ordered by priority.
+Priority items are marked with an asterisk (\*).
 
 ## Automator
 
 ### Schema Saving System (SSS)
 
-- System to save steps and variables in a JSON file
-- List all saved files
-- Import / Export files (import copies from other folder to data folder; export does the opposite)
+- Confirm delete before executing
 
 ### Steps
 
+- Allow step edition\*
+- Make steps draggable to reorder them\*
 - Add keyboard combination press step (`Ctrl + Shift + K` for example)
 - Add conditional step (`if`, `else`, `else if`; check if types can be done using inheritance)
 - Add sleep step
 - Move mouse: Add "smooth movement" option
+- Write text: fix not writing latin characters (check `enigo` crate)
 
 ## Settings Menu
 
@@ -25,7 +26,7 @@ All items are ordered by priority.
 
 ### Update
 
-- Add button to update
+- Add button to update\*
 
 ## Spreadsheet Formatter
 
