@@ -1,10 +1,16 @@
 import {
+  Button,
+  Grid
+} from '@mantine/core'
+import {
+  IconPlus,
+  IconTrash
+} from '@tabler/icons-react'
+import {
   useContext,
   useEffect
 } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button } from '@mantine/core'
-import { IconPlus } from '@tabler/icons-react'
 
 import {
   AutomationContext,
@@ -26,7 +32,9 @@ export const Automation = (props: AutomationProps) => {
   const {
     steps: contextSteps,
     getStep,
-    getStepPositionString
+    getStepPositionString,
+    setSteps,
+    setVariables
   } = useContext(AutomationContext)
   const { setPageSubtitle } = useContext(HeaderContext)
 
@@ -80,15 +88,31 @@ export const Automation = (props: AutomationProps) => {
 
   return (
     <>
-      <Button
-        variant='default'
-        mb='md'
-        leftSection={<IconPlus />}
-        onClick={() => setIsNewStepOpen(true)}
-        fullWidth
-      >
-        Adicionar passo
-      </Button>
+      <Grid mb='md'>
+        <Grid.Col span={11}>
+          <Button
+            variant='default'
+            leftSection={<IconPlus />}
+            onClick={() => setIsNewStepOpen(true)}
+            fullWidth
+          >
+            Adicionar passo
+          </Button>
+        </Grid.Col>
+
+        <Grid.Col span={1}>
+          <Button
+            color='red'
+            onClick={() => {
+              setSteps([])
+              setVariables({})
+            }}
+            fullWidth
+          >
+            <IconTrash />
+          </Button>
+        </Grid.Col>
+      </Grid>
 
       <AutomationSteps steps={steps} />
     </>
