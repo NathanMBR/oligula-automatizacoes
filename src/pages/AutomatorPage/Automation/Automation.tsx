@@ -22,18 +22,17 @@ import { AutomationSteps } from './AutomationSteps'
 import { StepTypes } from '../StepTypes'
 import type { AutomatorPageParams } from '../AutomatorPage'
 
-export type AutomationProps = {
-  setIsNewStepOpen: (value: boolean) => void
-}
-
-export const Automation = (props: AutomationProps) => {
-  const { setIsNewStepOpen } = props
-
+export const Automation = () => {
   const {
     steps: contextSteps,
     getStep,
     getStepPositionString,
     setSteps,
+
+    setIsAddingStep,
+
+    setStageIndex,
+
     setVariables
   } = useContext(AutomationContext)
   const { setPageSubtitle } = useContext(HeaderContext)
@@ -93,7 +92,10 @@ export const Automation = (props: AutomationProps) => {
           <Button
             variant='default'
             leftSection={<IconPlus />}
-            onClick={() => setIsNewStepOpen(true)}
+            onClick={() => {
+              setIsAddingStep(true)
+              setStageIndex(0)
+            }}
             fullWidth
           >
             Adicionar passo

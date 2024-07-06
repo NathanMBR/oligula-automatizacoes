@@ -18,7 +18,13 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
   const {
     getStepPositionString,
     deleteVariablesByStepId,
-    removeStep
+    removeStep,
+
+    setIsAddingStep,
+
+    setEditingStep,
+
+    setStageIndex
   } = useContext(AutomationContext)
 
   return <Stack mb={80}>
@@ -30,6 +36,12 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
         } = step
 
         const position = getStepPositionString(id)
+        const onEdit = () => {
+          setIsAddingStep(true)
+          setEditingStep(step)
+          setStageIndex(1)
+        }
+
         const onRemove = () => {
           deleteVariablesByStepId(id)
           removeStep(id)
@@ -41,6 +53,7 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
             position={position}
             x={step.data.x}
             y={step.data.y}
+            onEdit={onEdit}
             onRemove={onRemove}
           />
 
@@ -49,6 +62,7 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
             key={id}
             position={position}
             button={step.data.button}
+            onEdit={onEdit}
             onRemove={onRemove}
           />
 
@@ -58,6 +72,7 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
             position={position}
             text={step.data.text}
             readFrom={step.data.readFrom}
+            onEdit={onEdit}
             onRemove={onRemove}
           />
 
@@ -67,6 +82,7 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
             position={position}
             filename={step.data.filename}
             saveAs={step.data.saveAs}
+            onEdit={onEdit}
             onRemove={onRemove}
           />
 
@@ -78,6 +94,7 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
             readFrom={step.data.readFrom}
             divider={step.data.divider}
             saveAs={step.data.saveAs}
+            onEdit={onEdit}
             onRemove={onRemove}
           />
 
@@ -89,6 +106,7 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
             saveItemsAs={step.data.saveItemsAs}
             iterable={step.data.iterable}
             steps={step.data.steps}
+            onEdit={onEdit}
             onRemove={onRemove}
           />
       })

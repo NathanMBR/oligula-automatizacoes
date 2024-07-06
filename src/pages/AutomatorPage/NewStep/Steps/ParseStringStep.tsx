@@ -10,6 +10,10 @@ import {
 } from 'react'
 import { IconVariable } from '@tabler/icons-react'
 
+import type {
+  ParseStringStepData,
+  StepDefaultData
+} from '../../../../types'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
 import { ClearableTextInput } from '../../../../components'
@@ -17,15 +21,21 @@ import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
+type ParseStringStepPayload = ParseStringStepData & StepDefaultData
 export type ParseStringStepProps = {
   onClose: () => void
+  editingStep: ParseStringStepPayload | null
 }
 
 export const ParseStringStep = (props: ParseStringStepProps) => {
-  const { onClose } = props
+  const {
+    onClose,
+    editingStep
+  } = props
 
   const {
     addStep,
+    editStep,
 
     listVariables,
     hasVariable,
@@ -34,10 +44,10 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
 
   const variables = listVariables()
 
-  const [parseText, setParseText] = useState('')
-  const [selectedVariable, setSelectedVariable] = useState(variables[0] || '')
-  const [separatorText, setSeparatorText] = useState('')
-  const [saveAs, setSaveAs] = useState('')
+  const [parseText, setParseText] = useState(editingStep?.data.parseString || '')
+  const [selectedVariable, setSelectedVariable] = useState(editingStep?.data.readFrom || variables[0] || '')
+  const [separatorText, setSeparatorText] = useState(editingStep?.data.divider || '')
+  const [saveAs, setSaveAs] = useState(editingStep?.data.saveAs || '')
   const [variableError, setVariableError] = useState('')
 
   const parentId = useParentId()
@@ -62,22 +72,23 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
     if (hasVariable(saveAs))
       return setVariableError('Nome de variável já utilizado')
 
-    const id = generateRandomID()
+    const id = editingStep?.id || generateRandomID()
 
-    addStep(
-      {
-        id,
-        type: 'parseString',
-        data: {
-          parseString: parseText,
-          readFrom: selectedVariable,
-          divider: separatorText,
-          saveAs
-        }
-      },
+    const parseStringStepPayload: ParseStringStepPayload = {
+      id,
+      type: 'parseString',
+      data: {
+        parseString: parseText,
+        readFrom: selectedVariable,
+        divider: separatorText,
+        saveAs
+      }
+    }
 
-      parentId
-    )
+    if (editingStep)
+      editStep(editingStep.id, parseStringStepPayload)
+    else
+      addStep(parseStringStepPayload, parentId)
 
     setVariable(saveAs, {
       ownerId: id,

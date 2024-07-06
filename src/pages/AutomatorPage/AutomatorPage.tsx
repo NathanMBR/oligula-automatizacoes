@@ -1,8 +1,5 @@
-import {
-  useEffect,
-  useState
-} from 'react'
 import { appWindow } from '@tauri-apps/api/window'
+import { useEffect } from 'react'
 
 import {
   Navbar,
@@ -19,8 +16,6 @@ export type AutomatorPageParams = {
 }
 
 export const AutomatorPage = () => {
-  const [isNewStepOpen, setIsNewStepOpen] = useState(false)
-
   useEffect(() => {
     appWindow.setTitle('Oligula Automatizações | Automatizador')
   }, [])
@@ -28,16 +23,13 @@ export const AutomatorPage = () => {
   return (
     <Navbar selectedOption='Automatizador'>
       <Header>
-        <Automation setIsNewStepOpen={setIsNewStepOpen} />
+        <Automation />
 
         <RunAutomation />
 
         <AutomationStore />
 
-        <NewStep
-          isOpen={isNewStepOpen}
-          onClose={() => setIsNewStepOpen(false)}
-        />
+        <NewStep />
       </Header>
     </Navbar>
   )

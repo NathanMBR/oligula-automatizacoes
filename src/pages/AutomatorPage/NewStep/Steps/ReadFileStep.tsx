@@ -12,22 +12,31 @@ import {
   useState
 } from 'react'
 
+import type {
+  ReadFileStepData,
+  StepDefaultData
+} from '../../../../types'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
 import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
+type ReadFileStepPayload = ReadFileStepData & StepDefaultData
 export type ReadFileStepProps = {
   onClose: () => void
+  editingStep: ReadFileStepPayload | null
 }
 
 export const ReadFileStep = (props: ReadFileStepProps) => {
-  const { onClose } = props
+  const {
+    onClose,
+    editingStep
+  } = props
 
-  const [filename, setFilename] = useState('')
+  const [filename, setFilename] = useState(editingStep?.data.filename || '')
+  const [saveAs, setSaveAs] = useState(editingStep?.data.saveAs || '')
   const [fileContent, setFileContent] = useState('')
-  const [saveAs, setSaveAs] = useState('')
   const [variableError, setVariableError] = useState('')
   const [isReadingFile, setIsReadingFile] = useState(false)
 
@@ -35,6 +44,8 @@ export const ReadFileStep = (props: ReadFileStepProps) => {
 
   const {
     addStep,
+    editStep,
+
     hasVariable,
     setVariable
   } = useContext(AutomationContext)
@@ -65,20 +76,21 @@ export const ReadFileStep = (props: ReadFileStepProps) => {
     if (hasVariable(saveAs))
       return setVariableError('Nome de variável já utilizado')
 
-    const id = generateRandomID()
+    const id = editingStep?.id || generateRandomID()
 
-    addStep(
-      {
-        id,
-        type: 'readFile',
-        data: {
-          filename: filename,
-          saveAs: saveAs
-        }
-      },
+    const readFileStepPayload: ReadFileStepPayload = {
+      id,
+      type: 'readFile',
+      data: {
+        filename: filename,
+        saveAs: saveAs
+      }
+    }
 
-      parentId
-    )
+    if (editingStep)
+      editStep(editingStep.id, readFileStepPayload)
+    else
+      addStep(readFileStepPayload, parentId)
 
     setVariable(saveAs, {
       ownerId: id,

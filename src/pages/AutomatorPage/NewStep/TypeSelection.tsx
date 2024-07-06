@@ -22,7 +22,11 @@ export const TypeSelection = (props: TypeSelectionProps) => {
     setStepType
   } = props
 
-  const { setStageIndex } = useContext(AutomationContext)
+  const {
+    setIsAddingStep,
+
+    setStageIndex
+  } = useContext(AutomationContext)
 
   const typeCategories = {
     actions: [
@@ -80,6 +84,7 @@ export const TypeSelection = (props: TypeSelectionProps) => {
       />
 
       <Group justify='end' mt='md'>
+        <Button variant='default' onClick={() => setIsAddingStep(false)}>Cancelar</Button>
         <Button onClick={() => setStageIndex(1)}>Próximo</Button>
       </Group>
     </>

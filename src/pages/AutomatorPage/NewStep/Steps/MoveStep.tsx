@@ -21,6 +21,11 @@ import {
   useState
 } from 'react'
 
+import type {
+  MousePosition,
+  MoveStepData,
+  StepDefaultData
+} from '../../../../types'
 import {
   checkMousePositionEquality,
   generateRandomID,
@@ -28,26 +33,33 @@ import {
 } from '../../../../helpers'
 import { AutomationContext } from '../../../../providers'
 import { useParentId } from '../../../../hooks'
-import type { MousePosition } from '../../../../types'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
 const MOUSE_SAMPLES = 5
 const SLEEP_TIME_IN_MS = 1_000
 
+type MoveStepPayload = MoveStepData & StepDefaultData
 export type MoveStepProps = {
   onClose: () => void
+  editingStep: MoveStepPayload | null
 }
 
 export const MoveStep = (props: MoveStepProps) => {
-  const { onClose } = props
+  const {
+    onClose,
+    editingStep
+  } = props
   const { appWindow } = tauriWindow
 
-  const [mousePosition, setMousePosition] = useState({ x: -1, y: -1 })
+  const [mousePosition, setMousePosition] = useState(editingStep?.data || { x: -1, y: -1 })
   const [isCapturingMousePosition, setIsCapturingMousePosition] = useState(false)
   const [positionError, setPositionError] = useState('')
 
-  const { addStep } = useContext(AutomationContext)
+  const {
+    addStep,
+    editStep
+  } = useContext(AutomationContext)
 
   const parentId = useParentId()
 
@@ -109,15 +121,16 @@ export const MoveStep = (props: MoveStepProps) => {
     if (!isPositionValid)
       return setPositionError('Posição fora dos limites da tela')
 
-    addStep(
-      {
-        id: generateRandomID(),
-        type: 'move',
-        data: mousePosition
-      },
+    const moveStepPayload: MoveStepPayload = {
+      id: editingStep?.id || generateRandomID(),
+      type: 'move',
+      data: mousePosition
+    }
 
-      parentId
-    )
+    if (editingStep)
+      editStep(editingStep.id, moveStepPayload)
+    else
+      addStep(moveStepPayload, parentId)
 
     onClose()
   }

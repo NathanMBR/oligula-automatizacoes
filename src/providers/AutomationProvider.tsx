@@ -21,6 +21,12 @@ export type AutomationData = {
   setSteps: (newSteps: Array<StepData>) => void
   editStep: (id: StepData['id'], editedStep: StepData) => void
 
+  isAddingStep: boolean
+  setIsAddingStep: (isAddingStep: boolean) => void
+
+  editingStep: StepData | null
+  setEditingStep: (step: StepData | null) => void
+
   variables: Variables
   getVariable: (name: string) => Variables[string] | undefined
   setVariable: (name: string, value: Variables[string]) => void
@@ -43,6 +49,12 @@ const defaultAutomationData: AutomationData = {
   setSteps: () => {},
   editStep: () => {},
 
+  isAddingStep: false,
+  setIsAddingStep: () => {},
+
+  editingStep: null,
+  setEditingStep: () => {},
+
   variables: {},
   getVariable: () => undefined,
   setVariable: () => {},
@@ -63,6 +75,8 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
   const [stageIndex, setStageIndex] = useState(defaultAutomationData.stageIndex)
   const [steps, setSteps] = useState(defaultAutomationData.steps)
   const [variables, setVariables] = useState(defaultAutomationData.variables)
+  const [isAddingStep, setIsAddingStep] = useState(defaultAutomationData.isAddingStep)
+  const [editingStep, setEditingStep] = useState(defaultAutomationData.editingStep)
 
   type RecursionResult = {
     success: true
@@ -252,41 +266,43 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
 
   const getVariable: AutomationData['getVariable'] = name => variables[name.toLowerCase()]
 
-  const setVariable: AutomationData['setVariable'] = (name, value) => setVariables({ ...variables, [name.toLowerCase()]: value })
+  const setVariable: AutomationData['setVariable'] = (name, value) => setVariables(currentVariables => ({ ...currentVariables, [name.toLowerCase()]: value }))
 
   const hasVariable: AutomationData['hasVariable'] = name => name.toLowerCase() in variables
 
   const listVariables: AutomationData['listVariables'] = () => Object.keys(variables)
 
-  const deleteVariable: AutomationData['deleteVariable'] = name => {
-    const newVariables = { ...variables }
+  const deleteVariable: AutomationData['deleteVariable'] = name => setVariables(currentVariables => {
+    const newVariables = { ...currentVariables }
     delete newVariables[name.toLowerCase()]
-    setVariables(newVariables)
-  }
+    return newVariables
+  })
 
   const deleteVariablesByStepId: AutomationData['deleteVariablesByStepId'] = id => {
-    const newVariables = { ...variables }
+    setVariables(currentVariables => {
+      const newVariables = { ...currentVariables }
 
-    const deleteVariablesByStepIdRecursively = (step: StepData): void => {
-      const { data } = step
+      const deleteVariablesByStepIdRecursively = (step: StepData): void => {
+        const { data } = step
 
-      if ('saveAs' in data)
-        delete newVariables[data.saveAs.toLowerCase()]
+        if ('saveAs' in data)
+          delete newVariables[data.saveAs.toLowerCase()]
 
-      if ('saveItemsAs' in data)
-        delete newVariables[data.saveItemsAs.toLowerCase()]
+        if ('saveItemsAs' in data)
+          delete newVariables[data.saveItemsAs.toLowerCase()]
 
-      if ('steps' in data)
-        data.steps.forEach(deleteVariablesByStepIdRecursively)
-    }
+        if ('steps' in data)
+          data.steps.forEach(deleteVariablesByStepIdRecursively)
+      }
 
-    const step = getStep(id)
-    if (!step)
-      return
+      const step = getStep(id)
+      if (!step)
+        return currentVariables
 
-    deleteVariablesByStepIdRecursively(step)
+      deleteVariablesByStepIdRecursively(step)
 
-    setVariables(newVariables)
+      return newVariables
+    })
   }
 
   const automationData: AutomationData = {
@@ -300,6 +316,12 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
     getStepPositionString,
     setSteps,
     editStep,
+
+    isAddingStep,
+    setIsAddingStep,
+
+    editingStep,
+    setEditingStep,
 
     variables,
     getVariable,

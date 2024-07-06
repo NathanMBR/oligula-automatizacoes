@@ -9,6 +9,7 @@ import {
 } from 'react'
 
 import { AutomationContext } from '../../../providers'
+import type { StepData } from '../../../types'
 
 import {
   // actions
@@ -22,39 +23,42 @@ import {
   CycleStep
 } from './Steps'
 import { TypeSelection } from './TypeSelection'
-import type { StepData } from '../../../types'
 
-export type NewStepProps = {
-  isOpen: boolean
-  onClose: () => void
-}
-
-export const NewStep = (props: NewStepProps) => {
+export const NewStep = () => {
   const {
-    isOpen,
-    onClose
-  } = props
+    isAddingStep,
+    setIsAddingStep,
 
-  const {
+    editingStep,
+
     stageIndex,
     setStageIndex
   } = useContext(AutomationContext)
 
-  const [stepType, setStepType] = useState<StepData['type']>('move')
+  const [stepType, setStepType] = useState<StepData['type']>(editingStep?.type || 'move')
+
+  const handleClose = () => setIsAddingStep(false)
 
   useEffect(() => {
-    if (isOpen) {
+    if (isAddingStep && !editingStep) {
       setStageIndex(0)
       setStepType('move')
     }
-  }, [isOpen])
+  }, [isAddingStep])
+
+  useEffect(() => {
+    if (editingStep)
+      setStepType(editingStep.type)
+  }, [editingStep])
+
+  const modalTitle = editingStep ? 'Editar passo' : 'Novo passo'
 
   return (
     <Modal
-      title='Novo passo'
       size='lg'
-      opened={isOpen}
-      onClose={onClose}
+      title={modalTitle}
+      opened={isAddingStep}
+      onClose={handleClose}
       overlayProps={{ blur: 2.5 }}
       centered
     >
@@ -71,31 +75,46 @@ export const NewStep = (props: NewStepProps) => {
 
           {
             stepType === 'move'
-              ? <MoveStep onClose={onClose} />
+              ? <MoveStep
+                onClose={handleClose}
+                editingStep={editingStep?.type === 'move' ? editingStep : null}
+              />
               : null
           }
 
           {
             stepType === 'click'
-              ? <ClickStep onClose={onClose} />
+              ? <ClickStep
+                onClose={handleClose}
+                editingStep={editingStep?.type === 'click' ? editingStep : null}
+              />
               : null
           }
 
           {
             stepType === 'write'
-              ? <WriteStep onClose={onClose} />
+              ? <WriteStep
+                onClose={handleClose}
+                editingStep={editingStep?.type === 'write' ? editingStep : null}
+              />
               : null
           }
 
           {
             stepType === 'readFile'
-              ? <ReadFileStep onClose={onClose} />
+              ? <ReadFileStep
+                onClose={handleClose}
+                editingStep={editingStep?.type === 'readFile' ? editingStep : null}
+              />
               : null
           }
 
           {
             stepType === 'parseString'
-              ? <ParseStringStep onClose={onClose} />
+              ? <ParseStringStep
+                onClose={handleClose}
+                editingStep={editingStep?.type === 'parseString' ? editingStep : null}
+              />
               : null
           }
 
@@ -103,7 +122,10 @@ export const NewStep = (props: NewStepProps) => {
 
           {
             stepType === 'cycle'
-              ? <CycleStep onClose={onClose} />
+              ? <CycleStep
+                onClose={handleClose}
+                editingStep={editingStep?.type === 'cycle' ? editingStep : null}
+              />
               : null
           }
         </Stepper.Step>

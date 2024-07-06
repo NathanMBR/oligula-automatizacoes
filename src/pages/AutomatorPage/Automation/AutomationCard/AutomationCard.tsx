@@ -28,7 +28,6 @@ import type {
   CycleStepData,
   StepData
 } from '../../../../types'
-
 import { ensureCharactersLimit } from '../../../../helpers'
 
 import { StepTypes } from '../../StepTypes'
@@ -39,6 +38,7 @@ type AutomationCardPropsBase = {
   position: number | string
   title: string
   label?: ReactNode
+  onEdit: () => void
   onRemove: () => void
 }
 
@@ -67,6 +67,7 @@ const AutomationCardBase = (props: AutomationCardProps) => {
     label,
     steps,
     currentStep,
+    onEdit,
     onRemove
   } = props
 
@@ -114,7 +115,7 @@ const AutomationCardBase = (props: AutomationCardProps) => {
                 </ActionIcon>
             }
 
-            <ActionIcon {...actionIconProps} onClick={() => {}}>
+            <ActionIcon {...actionIconProps} onClick={onEdit}>
               <IconEdit {...iconProps} />
             </ActionIcon>
 
@@ -134,18 +135,20 @@ export namespace AutomationCard {
     QUOTE: 50
   }
 
-  export const Move = (props: Pick<AutomationCardProps, 'position' | 'onRemove'> & MoveStepData['data']) => <AutomationCardBase
+  export const Move = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove'> & MoveStepData['data']) => <AutomationCardBase
     icon={<StepTypes.move.icon />}
     title={StepTypes.move.title}
     position={props.position}
+    onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={`para a posição x: ${props.x}, y: ${props.y}`}
   />
 
-  export const Click = (props: Pick<AutomationCardProps, 'position' | 'onRemove'> & ClickStepData['data']) => {
+  export const Click = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove'> & ClickStepData['data']) => {
     const {
       position,
       button,
+      onEdit,
       onRemove
     } = props
 
@@ -160,16 +163,18 @@ export namespace AutomationCard {
         icon={<StepTypes.click.icon />}
         title={StepTypes.click.title}
         position={position}
+        onEdit={onEdit}
         onRemove={onRemove}
         label={`usando o botão ${MouseButtons[button]}`}
       />
     )
   }
 
-  export const Write = (props: Pick<AutomationCardProps, 'position' | 'onRemove'> & WriteStepData['data']) => <AutomationCardBase
+  export const Write = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove'> & WriteStepData['data']) => <AutomationCardBase
     icon={<StepTypes.write.icon />}
     title={StepTypes.write.title}
     position={props.position}
+    onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={
       <Group gap={4}>
@@ -182,10 +187,11 @@ export namespace AutomationCard {
     }
   />
 
-  export const ReadFile = (props: Pick<AutomationCardProps, 'position' | 'onRemove'> & ReadFileStepData['data']) => <AutomationCardBase
+  export const ReadFile = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove'> & ReadFileStepData['data']) => <AutomationCardBase
     icon={<StepTypes.readFile.icon />}
     title={StepTypes.readFile.title}
     position={props.position}
+    onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={
       <Group gap={4}>
@@ -194,10 +200,11 @@ export namespace AutomationCard {
     }
   />
 
-  export const ParseString = (props: Pick<AutomationCardProps, 'position' | 'onRemove'> & ParseStringStepData['data']) => <AutomationCardBase
+  export const ParseString = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove'> & ParseStringStepData['data']) => <AutomationCardBase
     icon={<StepTypes.parseString.icon />}
     title={StepTypes.parseString.title}
     position={props.position}
+    onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={
       <Group gap={4}>
@@ -214,12 +221,13 @@ export namespace AutomationCard {
     }
   />
 
-  export const Cycle = (props: Required<Pick<AutomationCardProps, 'position' | 'onRemove' | 'currentStep'>> & CycleStepData['data']) => <AutomationCardBase
+  export const Cycle = (props: Required<Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove' | 'currentStep'>> & CycleStepData['data']) => <AutomationCardBase
     icon={<StepTypes.cycle.icon />}
     title={StepTypes.cycle.title}
     steps={props.steps}
     position={props.position}
     currentStep={props.currentStep}
+    onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={
       <Group gap={4}>

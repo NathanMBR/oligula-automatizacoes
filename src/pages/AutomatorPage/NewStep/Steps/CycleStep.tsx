@@ -8,6 +8,10 @@ import {
 } from 'react'
 import { IconVariable } from '@tabler/icons-react'
 
+import type {
+  CycleStepData,
+  StepDefaultData
+} from '../../../../types'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
 import { ClearableTextInput } from '../../../../components'
@@ -15,27 +19,34 @@ import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
+type CycleStepPayload = CycleStepData & StepDefaultData
 export type CycleStepProps = {
   onClose: () => void
+  editingStep: CycleStepPayload | null
 }
 
 export const CycleStep = (props: CycleStepProps) => {
-  const { onClose } = props
+  const {
+    onClose,
+    editingStep
+  } = props
 
   const {
     addStep,
+    editStep,
 
     listVariables,
     hasVariable,
-    setVariable
+    setVariable,
+    deleteVariablesByStepId
   } = useContext(AutomationContext)
 
   const parentId = useParentId()
 
   const variables = listVariables()
 
-  const [selectedVariable, setSelectedVariable] = useState(variables[0] || '')
-  const [saveItemsAs, setSaveItemsAs] = useState('')
+  const [selectedVariable, setSelectedVariable] = useState(editingStep?.data.iterable || variables[0] || '')
+  const [saveItemsAs, setSaveItemsAs] = useState(editingStep?.data.saveItemsAs || '')
   const [variableError, setVariableError] = useState('')
 
   const noVariablesError = variables.length <= 0
@@ -50,24 +61,28 @@ export const CycleStep = (props: CycleStepProps) => {
     variableError === ''
 
   const addCycleStep = () => {
+    if (editingStep)
+      deleteVariablesByStepId(editingStep.id)
+
     if (hasVariable(saveItemsAs))
       return setVariableError('Nome de variável já utilizado')
 
-    const id = generateRandomID()
+    const id = editingStep?.id || generateRandomID()
 
-    addStep(
-      {
-        id,
-        type: 'cycle',
-        data: {
-          iterable: selectedVariable,
-          steps: [],
-          saveItemsAs
-        }
-      },
+    const cycleStepPayload: CycleStepPayload = {
+      id,
+      type: 'cycle',
+      data: {
+        iterable: selectedVariable,
+        steps: editingStep?.data.steps || [],
+        saveItemsAs
+      }
+    }
 
-      parentId
-    )
+    if (editingStep)
+      editStep(editingStep.id, cycleStepPayload)
+    else
+      addStep(cycleStepPayload, parentId)
 
     setVariable(saveItemsAs, {
       ownerId: id,

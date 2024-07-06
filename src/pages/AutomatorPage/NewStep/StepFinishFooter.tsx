@@ -17,13 +17,23 @@ export const StepFinishFooter = (props: StepFinishFooterProps) => {
     addStep
   } = props
 
-  const { setStageIndex } = useContext(AutomationContext)
+  const {
+    setStageIndex,
+
+    editingStep
+  } = useContext(AutomationContext)
 
   return (
     <Group justify='end' mt='md'>
       <Button variant='default' onClick={() => setStageIndex(0)}>Voltar</Button>
 
-      <Button disabled={!allowFinish} onClick={addStep}>Adicionar</Button>
+      <Button disabled={!allowFinish} onClick={addStep}>
+        {
+          editingStep
+            ? 'Editar'
+            : 'Adicionar'
+        }
+      </Button>
     </Group>
   )
 }
