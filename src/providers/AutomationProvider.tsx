@@ -19,6 +19,7 @@ export type AutomationData = {
   getStep: (id: StepData['id']) => StepData | undefined
   getStepPositionString: (id: StepData['id']) => string
   setSteps: (newSteps: Array<StepData>) => void
+  editStep: (id: StepData['id'], editedStep: StepData) => void
 
   variables: Variables
   getVariable: (name: string) => Variables[string] | undefined
@@ -40,6 +41,7 @@ const defaultAutomationData: AutomationData = {
   getStep: () => undefined,
   getStepPositionString: () => '',
   setSteps: () => {},
+  editStep: () => {},
 
   variables: {},
   getVariable: () => undefined,
@@ -101,12 +103,13 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
         }
 
         const childrenStepsAddResult = getNewStepsRecursively(searchStep.data.steps)
-        if (childrenStepsAddResult.success) {
-          Object.assign(stepsCopy[i]!.data, { steps: childrenStepsAddResult.steps })
-          return {
-            success: true,
-            steps: stepsCopy
-          }
+        if (!childrenStepsAddResult.success)
+          continue
+
+        Object.assign(stepsCopy[i]!.data, { steps: childrenStepsAddResult.steps })
+        return {
+          success: true,
+          steps: stepsCopy
         }
       }
 
@@ -135,16 +138,18 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
           }
         }
 
-        if ('steps' in step.data) {
-          const childrenStepsRemoveResult = removeStepRecursively(step.data.steps)
-          if (!childrenStepsRemoveResult.success)
-            continue
+        if (!('steps' in step.data))
+          continue
 
-          Object.assign(stepsCopy[i]!.data, { steps: childrenStepsRemoveResult.steps })
-          return {
-            success: true,
-            steps: stepsCopy
-          }
+        const childrenStepsRemoveResult = removeStepRecursively(step.data.steps)
+        if (!childrenStepsRemoveResult.success)
+          continue
+
+        Object.assign(stepsCopy[i]!.data, { steps: childrenStepsRemoveResult.steps })
+
+        return {
+          success: true,
+          steps: stepsCopy
         }
       }
 
@@ -164,11 +169,12 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
         if (step.id === id)
           return step
 
-        if ('steps' in step.data) {
-          const foundStep = findStepRecursively(step.data.steps)
-          if (foundStep)
-            return foundStep
-        }
+        if (!('steps' in step.data))
+          continue
+
+        const foundStep = findStepRecursively(step.data.steps)
+        if (foundStep)
+          return foundStep
       }
 
       return undefined
@@ -187,14 +193,15 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
           return positionString
         }
 
-        if ('steps' in step.data) {
-          const partialPosition = getStepPositionStringRecursively(step.data.steps)
-          if (partialPosition === '')
-            continue
+        if (!('steps' in step.data))
+          continue
 
-          positionString += `${index + 1}.${partialPosition}`
-          return positionString
-        }
+        const partialPosition = getStepPositionStringRecursively(step.data.steps)
+        if (partialPosition === '')
+          continue
+
+        positionString += `${index + 1}.${partialPosition}`
+        return positionString
       }
 
       return positionString
@@ -203,11 +210,54 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
     return getStepPositionStringRecursively(steps)
   }
 
+  const editStep: AutomationData['editStep'] = (id, editedStep) => {
+    const getNewStepsRecursively = (stepsToSearch: Array<StepData>): RecursionResult => {
+      const stepsCopy = JSON.parse(JSON.stringify(stepsToSearch)) as Array<StepData>
+
+      for (let i = 0; i < stepsCopy.length; i++) {
+        const searchStep = stepsCopy[i]!
+
+        if (searchStep.id === id) {
+          stepsCopy[i] = editedStep
+          return {
+            success: true,
+            steps: stepsCopy
+          }
+        }
+
+        if (!('steps' in searchStep.data))
+          continue
+
+        const childrenStepsEditResult = getNewStepsRecursively(searchStep.data.steps)
+        if (!childrenStepsEditResult.success)
+          continue
+
+        Object.assign(stepsCopy[i]!.data, { steps: childrenStepsEditResult.steps })
+
+        return {
+          success: true,
+          steps: stepsCopy
+        }
+      }
+
+      return {
+        success: false
+      }
+    }
+
+    const recursionResult = getNewStepsRecursively(steps)
+    if (recursionResult.success)
+      setSteps(recursionResult.steps)
+  }
+
   const getVariable: AutomationData['getVariable'] = name => variables[name.toLowerCase()]
 
   const setVariable: AutomationData['setVariable'] = (name, value) => setVariables({ ...variables, [name.toLowerCase()]: value })
+
   const hasVariable: AutomationData['hasVariable'] = name => name.toLowerCase() in variables
+
   const listVariables: AutomationData['listVariables'] = () => Object.keys(variables)
+
   const deleteVariable: AutomationData['deleteVariable'] = name => {
     const newVariables = { ...variables }
     delete newVariables[name.toLowerCase()]
@@ -249,6 +299,7 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
     getStep,
     getStepPositionString,
     setSteps,
+    editStep,
 
     variables,
     getVariable,
