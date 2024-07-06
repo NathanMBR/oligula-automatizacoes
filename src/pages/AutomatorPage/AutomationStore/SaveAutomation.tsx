@@ -56,7 +56,7 @@ export const SaveAutomation = (props: SaveAutomationProps) => {
     }
 
     await fs.writeTextFile(
-      { path: filePath, contents: JSON.stringify(storedAutomation) },
+      { path: filePath, contents: JSON.stringify(storedAutomation, null, 2) },
       { dir: BaseDirectory.AppData }
     )
 
