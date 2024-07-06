@@ -10,8 +10,8 @@ Priority items are marked with an asterisk (\*).
 
 ### Steps
 
-- Allow step edition\*
 - Make steps draggable to reorder them\*
+- Make clear steps button remove only from current screen\*
 - Add keyboard combination press step (`Ctrl + Shift + K` for example)
 - Add conditional step (`if`, `else`, `else if`; check if types can be done using inheritance)
 - Add sleep step
