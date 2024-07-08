@@ -27,13 +27,14 @@ export const Automation = () => {
     steps: contextSteps,
     getStep,
     getStepPositionString,
-    setSteps,
+    clearSteps,
 
     setIsAddingStep,
 
     setStageIndex,
 
-    setVariables
+    deleteVariablesByStepId,
+    clearVariables
   } = useContext(AutomationContext)
   const { setPageSubtitle } = useContext(HeaderContext)
 
@@ -106,8 +107,14 @@ export const Automation = () => {
           <Button
             color='red'
             onClick={() => {
-              setSteps([])
-              setVariables({})
+              if (!Number.isNaN(expandedStepId) && expandedStepId >= 0) {
+                deleteVariablesByStepId(expandedStepId)
+                clearSteps(expandedStepId)
+                return
+              }
+
+              clearVariables()
+              clearSteps()
             }}
             disabled={steps.length === 0}
             fullWidth

@@ -20,6 +20,7 @@ export type AutomationData = {
   getStepPositionString: (id: StepData['id']) => string
   setSteps: (newSteps: Array<StepData>) => void
   editStep: (id: StepData['id'], editedStep: StepData) => void
+  clearSteps: (fromId?: StepData['id']) => void
 
   isAddingStep: boolean
   setIsAddingStep: (isAddingStep: boolean) => void
@@ -35,6 +36,7 @@ export type AutomationData = {
   deleteVariable: (name: string) => void
   deleteVariablesByStepId: (id: number) => void
   setVariables: (newVariables: Variables) => void
+  clearVariables: () => void
 }
 
 const defaultAutomationData: AutomationData = {
@@ -48,6 +50,7 @@ const defaultAutomationData: AutomationData = {
   getStepPositionString: () => '',
   setSteps: () => {},
   editStep: () => {},
+  clearSteps: () => {},
 
   isAddingStep: false,
   setIsAddingStep: () => {},
@@ -62,7 +65,8 @@ const defaultAutomationData: AutomationData = {
   listVariables: () => [],
   deleteVariable: () => {},
   deleteVariablesByStepId: () => {},
-  setVariables: () => {}
+  setVariables: () => {},
+  clearVariables: () => {}
 }
 
 export const AutomationContext = createContext(defaultAutomationData)
@@ -264,6 +268,34 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
       setSteps(recursionResult.steps)
   }
 
+  const clearSteps: AutomationData['clearSteps'] = fromStepId => {
+    if (!fromStepId)
+      return setSteps([])
+
+    const getNewStepsRecursively = (stepsToSearch: Array<StepData>, id: typeof fromStepId): Array<StepData> => {
+      const stepsCopy = JSON.parse(JSON.stringify(stepsToSearch)) as Array<StepData>
+
+      for (let i = 0; i < stepsCopy.length; i++) {
+        const searchStep = stepsCopy[i]!
+
+        if (!('steps' in searchStep.data))
+          continue
+
+        if (searchStep.id === id) {
+          Object.assign(stepsCopy[i]!.data, { steps: [] })
+          return stepsCopy
+        }
+
+        Object.assign(stepsCopy[i]!.data, { steps: getNewStepsRecursively(searchStep.data.steps, id) })
+      }
+
+      return stepsCopy
+    }
+
+    const newSteps = getNewStepsRecursively(steps, fromStepId)
+    setSteps(newSteps)
+  }
+
   const getVariable: AutomationData['getVariable'] = name => variables[name.toLowerCase()]
 
   const setVariable: AutomationData['setVariable'] = (name, value) => setVariables(currentVariables => ({ ...currentVariables, [name.toLowerCase()]: value }))
@@ -305,6 +337,8 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
     })
   }
 
+  const clearVariables: AutomationData['clearVariables'] = () => setVariables({})
+
   const automationData: AutomationData = {
     stageIndex,
     setStageIndex,
@@ -316,6 +350,7 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
     getStepPositionString,
     setSteps,
     editStep,
+    clearSteps,
 
     isAddingStep,
     setIsAddingStep,
@@ -330,7 +365,8 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
     listVariables,
     deleteVariable,
     deleteVariablesByStepId,
-    setVariables
+    setVariables,
+    clearVariables
   }
 
   return (
