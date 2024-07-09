@@ -4,7 +4,10 @@ import {
   MouseButton,
   type Variables
 } from '../../../types'
-import { sleep } from '../../../helpers'
+import {
+  ensureCharactersLimit,
+  sleep
+} from '../../../helpers'
 import type { AutomationData } from '../../../providers'
 
 export type RunAutomationData = Pick<AutomationData, 'steps' | 'variables'> & {
@@ -51,15 +54,17 @@ export const runAutomationScript = async (data: RunAutomationData) => {
       if (typeof textToWrite !== 'string')
         return console.log(`Unexpected Error: Variable "${step.data.readFrom}" isn't a text (got ${typeof textToWrite})`)
 
-      console.log(`Running step "write" with text "${textToWrite.length <= 50 ? textToWrite : textToWrite.slice(0, 50)}"`)
+      console.log(`Running step "write" with text "${ensureCharactersLimit(textToWrite, 50)}"`)
 
       await invoke('write', { text: textToWrite })
 
       continue
     }
 
-    if (step.type === 'readFile')
+    if (step.type === 'readFile') {
+      console.log('Running step "readFile"')
       continue
+    }
 
     if (step.type === 'parseString') {
       const {
@@ -75,14 +80,16 @@ export const runAutomationScript = async (data: RunAutomationData) => {
         textToParse = parseString
       else {
         if (!hasVariable(readFrom))
-          throw new Error(`Variável "${readFrom}" não encontrada`)
+          return console.error(`Unexpected Error: Variable "${readFrom}" not found`)
 
         const variable = getVariable(readFrom)!
         if (typeof variable.value !== 'string')
-          throw new Error(`Variável "${readFrom}" não é um texto`)
+          return console.error(`Unexpected Error: Variable "${readFrom}" isn't a text (got ${typeof variable.value})`)
 
         textToParse = variable.value
       }
+
+      console.log(`Running step "parseString" with divider "${ensureCharactersLimit(divider, 50)}" and text "${ensureCharactersLimit(textToParse, 50)}"`)
 
       const parsedText = textToParse.split(divider)
       setVariable(saveAs, {
@@ -95,15 +102,13 @@ export const runAutomationScript = async (data: RunAutomationData) => {
 
     if (step.type === 'cycle') {
       const iterable = getVariable(step.data.iterable)
-      if (!iterable) {
-        console.error(`Unexpected Error: Variable "${step.data.iterable}" not found`)
-        return
-      }
+      if (!iterable)
+        return console.error(`Unexpected Error: Variable "${step.data.iterable}" not found`)
 
-      if (!Array.isArray(iterable.value)) {
-        console.error(`Unexpected Error: Variable "${step.data.iterable}" isn't a list (got ${typeof iterable.value})`)
-        return
-      }
+      if (!Array.isArray(iterable.value))
+        return console.error(`Unexpected Error: Variable "${step.data.iterable}" isn't a list (got ${typeof iterable.value})`)
+
+      console.log(`Running step "cycle" with iterable "${step.data.iterable}"`)
 
       for (const item of iterable.value) {
         const newVariable = {
