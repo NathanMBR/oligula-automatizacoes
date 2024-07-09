@@ -1,40 +1,44 @@
 import { invoke } from '@tauri-apps/api'
 
+import {
+  MouseButton,
+  type Variables
+} from '../../../types'
 import { sleep } from '../../../helpers'
-import { MouseButton } from '../../../types'
 import type { AutomationData } from '../../../providers'
 
-export type RunAutomationData = Pick<
-  AutomationData,
-  'steps' |
-  'variables' |
-  'hasVariable' |
-  'getVariable' |
-  'setVariable'
-> & {
+export type RunAutomationData = Pick<AutomationData, 'steps' | 'variables'> & {
   globalTimeBetweenStepsInMs: number
 }
 
 /* eslint-disable no-await-in-loop */
+/* eslint-disable no-console */
 export const runAutomationScript = async (data: RunAutomationData) => {
   const {
     globalTimeBetweenStepsInMs,
     steps,
-    variables,
-    hasVariable,
-    getVariable,
-    setVariable
+    variables
   } = data
+
+  const hasVariable = (name: string) => name.toLowerCase() in variables
+  const getVariable = (name: string) => variables[name.toLowerCase()]
+  const setVariable = (name: string, value: Variables[string]) => {
+    variables[name.toLowerCase()] = value
+  }
 
   for (const step of steps) {
     await sleep(globalTimeBetweenStepsInMs)
 
     if (step.type === 'move') {
+      console.log(`Running step "move" to position x: ${step.data.x}, y: ${step.data.y}`)
+
       await invoke('move_mouse_to', { position: step.data })
       continue
     }
 
     if (step.type === 'click') {
+      console.log(`Running step "click" with button ${step.data.button}`)
+
       await invoke('click', { button: MouseButton[step.data.button] })
       continue
     }
@@ -43,6 +47,11 @@ export const runAutomationScript = async (data: RunAutomationData) => {
       const textToWrite = step.data.text.length <= 0 && hasVariable(step.data.readFrom)
         ? getVariable(step.data.readFrom)!.value
         : step.data.text
+
+      if (typeof textToWrite !== 'string')
+        return console.log(`Unexpected Error: Variable "${step.data.readFrom}" isn't a text (got ${typeof textToWrite})`)
+
+      console.log(`Running step "write" with text "${textToWrite.length <= 50 ? textToWrite : textToWrite.slice(0, 50)}"`)
 
       await invoke('write', { text: textToWrite })
 
@@ -85,7 +94,6 @@ export const runAutomationScript = async (data: RunAutomationData) => {
     }
 
     if (step.type === 'cycle') {
-      /* eslint-disable no-console */
       const iterable = getVariable(step.data.iterable)
       if (!iterable) {
         console.error(`Unexpected Error: Variable "${step.data.iterable}" not found`)
@@ -96,7 +104,6 @@ export const runAutomationScript = async (data: RunAutomationData) => {
         console.error(`Unexpected Error: Variable "${step.data.iterable}" isn't a list (got ${typeof iterable.value})`)
         return
       }
-      /* eslint-enable no-console */
 
       for (const item of iterable.value) {
         const newVariable = {
@@ -110,10 +117,7 @@ export const runAutomationScript = async (data: RunAutomationData) => {
           variables: {
             ...variables,
             [step.data.saveItemsAs]: newVariable
-          },
-          hasVariable,
-          getVariable,
-          setVariable
+          }
         })
       }
 
@@ -121,4 +125,5 @@ export const runAutomationScript = async (data: RunAutomationData) => {
     }
   }
 }
+/* eslint-enable no-console */
 /* eslint-enable no-await-in-loop */

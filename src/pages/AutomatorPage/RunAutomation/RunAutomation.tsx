@@ -35,11 +35,16 @@ export const RunAutomation = () => {
     /* eslint-disable no-console */
     setIsRunningAutomation(true)
 
+    const automationData = {
+      steps: automationPayload.steps,
+      variables: { ...automationPayload.variables }
+    }
+
     runAutomationScript({
-      ...automationPayload,
+      ...automationData,
       globalTimeBetweenStepsInMs: app.settings.data.timeBetweenStepsInMs
     })
-      .catch(console.error)
+      // .catch(console.error)
       .finally(() => setIsRunningAutomation(false))
     /* eslint-enable no-console */
   }
