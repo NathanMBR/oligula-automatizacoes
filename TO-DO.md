@@ -10,7 +10,6 @@ Priority items are marked with an asterisk (\*).
 
 ### Steps
 
-- Make steps draggable to reorder them\*
 - Add keyboard combination press step (`Ctrl + Shift + K` for example)
 - Add conditional step (`if`, `else`, `else if`; check if types can be done using inheritance)
 - Add sleep step
