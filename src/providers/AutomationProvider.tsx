@@ -21,6 +21,7 @@ export type AutomationData = {
   setSteps: (newSteps: Array<StepData>) => void
   editStep: (id: StepData['id'], editedStep: StepData) => void
   clearSteps: (fromId?: StepData['id']) => void
+  reorderSteps: (sourceIndex: number, destinationIndex: number, stepId?: StepData['id']) => void
 
   isAddingStep: boolean
   setIsAddingStep: (isAddingStep: boolean) => void
@@ -51,6 +52,7 @@ const defaultAutomationData: AutomationData = {
   setSteps: () => {},
   editStep: () => {},
   clearSteps: () => {},
+  reorderSteps: () => {},
 
   isAddingStep: false,
   setIsAddingStep: () => {},
@@ -296,6 +298,42 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
     setSteps(newSteps)
   }
 
+  const reorderSteps: AutomationData['reorderSteps'] = (sourceIndex, destinationIndex, stepId) => {
+    const getNewStepsRecursively = (stepsToSearch: Array<StepData>): Array<StepData> => {
+      const stepsCopy = JSON.parse(JSON.stringify(stepsToSearch)) as Array<StepData>
+
+      if (!stepId || Number.isNaN(stepId) || stepId < 0) {
+        const removedSteps = stepsCopy.splice(sourceIndex, 1)
+        stepsCopy.splice(destinationIndex, 0, ...removedSteps)
+        return stepsCopy
+      }
+
+      const newSteps: Array<StepData> = []
+
+      for (const step of stepsCopy) {
+        if (!('steps' in step.data)) {
+          newSteps.push(step)
+          continue
+        }
+
+        if (step.id === stepId) {
+          const removedSteps = stepsCopy.splice(sourceIndex, 1)
+          stepsCopy.splice(destinationIndex, 0, ...removedSteps)
+          continue
+        }
+
+        const newChildrenSteps = getNewStepsRecursively(step.data.steps)
+        step.data.steps = newChildrenSteps
+        newSteps.push(step)
+      }
+
+      return newSteps
+    }
+
+    const newSteps = getNewStepsRecursively(steps)
+    setSteps(newSteps)
+  }
+
   const getVariable: AutomationData['getVariable'] = name => variables[name.toLowerCase()]
 
   const setVariable: AutomationData['setVariable'] = (name, value) => setVariables(currentVariables => ({ ...currentVariables, [name.toLowerCase()]: value }))
@@ -351,6 +389,7 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
     setSteps,
     editStep,
     clearSteps,
+    reorderSteps,
 
     isAddingStep,
     setIsAddingStep,

@@ -7,6 +7,10 @@ import {
   IconTrash
 } from '@tabler/icons-react'
 import {
+  DragDropContext,
+  type DropResult
+} from '@hello-pangea/dnd'
+import {
   useContext,
   useEffect
 } from 'react'
@@ -28,8 +32,11 @@ export const Automation = () => {
     getStep,
     getStepPositionString,
     clearSteps,
+    reorderSteps,
 
     setIsAddingStep,
+
+    setEditingStep,
 
     setStageIndex,
 
@@ -76,6 +83,14 @@ export const Automation = () => {
 
   const steps = getChildrenSteps(loadExpandedStep(expandedStepId)) || contextSteps
 
+  const handleDragEnd = ({ destination, source }: DropResult) => {
+    reorderSteps(
+      source.index,
+      destination?.index || 0,
+      expandedStepId
+    )
+  }
+
   useEffect(() => {
     const step = loadExpandedStep(expandedStepId)
     if (!step)
@@ -95,6 +110,7 @@ export const Automation = () => {
             leftSection={<IconPlus />}
             onClick={() => {
               setIsAddingStep(true)
+              setEditingStep(null)
               setStageIndex(0)
             }}
             fullWidth
@@ -124,7 +140,9 @@ export const Automation = () => {
         </Grid.Col>
       </Grid>
 
-      <AutomationSteps steps={steps} />
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <AutomationSteps steps={steps} />
+      </DragDropContext>
     </>
   )
 }

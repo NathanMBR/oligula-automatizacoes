@@ -18,6 +18,7 @@ import type {
   ReactNode
 } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Draggable } from '@hello-pangea/dnd'
 
 import type {
   MoveStepData,
@@ -38,21 +39,18 @@ type AutomationCardPropsBase = {
   position: number | string
   title: string
   label?: ReactNode
+  currentStepId: StepData['id']
+  index: number
   onEdit: () => void
   onRemove: () => void
 }
 
 type AutomationCardPropsWithSteps = AutomationCardPropsBase & {
   steps: Array<StepData>
-  currentStep: {
-    id: StepData['id']
-    type: StepData['type']
-  }
 }
 
 type AutomationCardPropsWithoutSteps = AutomationCardPropsBase & {
   steps?: never
-  currentStep?: never
 }
 
 export type AutomationCardProps =
@@ -65,8 +63,9 @@ const AutomationCardBase = (props: AutomationCardProps) => {
     position,
     title,
     label,
+    currentStepId,
+    index,
     steps,
-    currentStep,
     onEdit,
     onRemove
   } = props
@@ -83,49 +82,58 @@ const AutomationCardBase = (props: AutomationCardProps) => {
   }
 
   return (
-    <Card withBorder>
-      <Card.Section py='sm' inheritPadding>
-        <Group justify='space-between'>
-          <Group>
-            {icon}
+    <Draggable draggableId={String(currentStepId)} index={index}>
+      {provided => (
+        <Card
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          withBorder
+        >
+          <Card.Section py='sm' inheritPadding>
+            <Group justify='space-between'>
+              <Group>
+                {icon}
 
-            <Divider orientation='vertical' />
+                <Divider orientation='vertical' />
 
-            <Stack gap={1}>
-              <Text fw={500} size='lg'>Passo {position}: {title}</Text>
+                <Stack gap={1}>
+                  <Text fw={500} size='lg'>Passo {position}: {title}</Text>
 
-              {
-                typeof label === 'string'
-                  ? <Text size='sm'>{label}</Text>
-                  : label || null
-              }
+                  {
+                    typeof label === 'string'
+                      ? <Text size='sm'>{label}</Text>
+                      : label || null
+                  }
 
-              <MinorSteps steps={steps} />
-            </Stack>
-          </Group>
+                  <MinorSteps steps={steps} />
+                </Stack>
+              </Group>
 
-          <Group>
-            {
-              currentStep
-                ? <ActionIcon {...actionIconProps} onClick={() => navigate(`/automator/${currentStep.id}`)}>
-                  <IconMaximize {...iconProps} />
+              <Group>
+                {
+                  steps
+                    ? <ActionIcon {...actionIconProps} onClick={() => navigate(`/automator/${currentStepId}`)}>
+                      <IconMaximize {...iconProps} />
+                    </ActionIcon>
+                    : <ActionIcon {...actionIconProps} disabled>
+                      <IconMaximizeOff {...iconProps} />
+                    </ActionIcon>
+                }
+
+                <ActionIcon {...actionIconProps} onClick={onEdit}>
+                  <IconEdit {...iconProps} />
                 </ActionIcon>
-                : <ActionIcon {...actionIconProps} disabled>
-                  <IconMaximizeOff {...iconProps} />
+
+                <ActionIcon {...actionIconProps} onClick={onRemove}>
+                  <IconTrash {...iconProps} />
                 </ActionIcon>
-            }
-
-            <ActionIcon {...actionIconProps} onClick={onEdit}>
-              <IconEdit {...iconProps} />
-            </ActionIcon>
-
-            <ActionIcon {...actionIconProps} onClick={onRemove}>
-              <IconTrash {...iconProps} />
-            </ActionIcon>
-          </Group>
-        </Group>
-      </Card.Section>
-    </Card>
+              </Group>
+            </Group>
+          </Card.Section>
+        </Card>
+      )}
+    </Draggable>
   )
 }
 
@@ -135,16 +143,18 @@ export namespace AutomationCard {
     QUOTE: 50
   }
 
-  export const Move = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove'> & MoveStepData['data']) => <AutomationCardBase
+  export const Move = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & MoveStepData['data']) => <AutomationCardBase
     icon={<StepTypes.move.icon />}
     title={StepTypes.move.title}
     position={props.position}
+    currentStepId={props.currentStepId}
+    index={props.index}
     onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={`para a posição x: ${props.x}, y: ${props.y}`}
   />
 
-  export const Click = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove'> & ClickStepData['data']) => {
+  export const Click = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & ClickStepData['data']) => {
     const {
       position,
       button,
@@ -163,6 +173,8 @@ export namespace AutomationCard {
         icon={<StepTypes.click.icon />}
         title={StepTypes.click.title}
         position={position}
+        currentStepId={props.currentStepId}
+        index={props.index}
         onEdit={onEdit}
         onRemove={onRemove}
         label={`usando o botão ${MouseButtons[button]}`}
@@ -170,10 +182,12 @@ export namespace AutomationCard {
     )
   }
 
-  export const Write = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove'> & WriteStepData['data']) => <AutomationCardBase
+  export const Write = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & WriteStepData['data']) => <AutomationCardBase
     icon={<StepTypes.write.icon />}
     title={StepTypes.write.title}
     position={props.position}
+    currentStepId={props.currentStepId}
+    index={props.index}
     onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={
@@ -187,10 +201,12 @@ export namespace AutomationCard {
     }
   />
 
-  export const ReadFile = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove'> & ReadFileStepData['data']) => <AutomationCardBase
+  export const ReadFile = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & ReadFileStepData['data']) => <AutomationCardBase
     icon={<StepTypes.readFile.icon />}
     title={StepTypes.readFile.title}
     position={props.position}
+    currentStepId={props.currentStepId}
+    index={props.index}
     onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={
@@ -200,10 +216,12 @@ export namespace AutomationCard {
     }
   />
 
-  export const ParseString = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove'> & ParseStringStepData['data']) => <AutomationCardBase
+  export const ParseString = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & ParseStringStepData['data']) => <AutomationCardBase
     icon={<StepTypes.parseString.icon />}
     title={StepTypes.parseString.title}
     position={props.position}
+    currentStepId={props.currentStepId}
+    index={props.index}
     onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={
@@ -221,12 +239,13 @@ export namespace AutomationCard {
     }
   />
 
-  export const Cycle = (props: Required<Pick<AutomationCardProps, 'position' | 'onEdit' | 'onRemove' | 'currentStep'>> & CycleStepData['data']) => <AutomationCardBase
+  export const Cycle = (props: Required<Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'>> & CycleStepData['data']) => <AutomationCardBase
     icon={<StepTypes.cycle.icon />}
     title={StepTypes.cycle.title}
     steps={props.steps}
     position={props.position}
-    currentStep={props.currentStep}
+    currentStepId={props.currentStepId}
+    index={props.index}
     onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={
