@@ -35,7 +35,10 @@ export const AutomationStore = () => {
         hidden={isHidden}
         icon={<IconFile stroke={1.5} />}
         ActionIconProps={{ variant: 'filled', disabled: isHidden }}
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setTabOption('load')
+          setIsOpen(true)
+        }}
       />
 
       <Modal
