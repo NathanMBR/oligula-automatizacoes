@@ -6,7 +6,7 @@ import { Select } from '@mantine/core'
 
 import type {
   ClickStepData,
-  StepDefaultData
+  StepData
 } from '../../../../types'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
@@ -14,10 +14,9 @@ import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
-type ClickStepPayload = ClickStepData & StepDefaultData
 export type ClickStepProps = {
   onClose: () => void
-  editingStep: ClickStepPayload | null
+  editingStep: StepData | null
 }
 
 export const ClickStep = (props: ClickStepProps) => {
@@ -26,7 +25,7 @@ export const ClickStep = (props: ClickStepProps) => {
     editingStep
   } = props
 
-  const [mouseButton, setMouseButton] = useState<ClickStepData['data']['button']>(editingStep?.data.button || 'left')
+  const [mouseButton, setMouseButton] = useState<ClickStepData['data']['button']>(editingStep?.type === 'click' ? editingStep.data.button : 'left')
 
   const {
     addStep,
@@ -36,7 +35,7 @@ export const ClickStep = (props: ClickStepProps) => {
   const parentId = useParentId()
 
   const addClickStep = () => {
-    const clickStepPayload: ClickStepPayload = {
+    const clickStepPayload: ClickStepData = {
       id: editingStep?.id || generateRandomID(),
       type: 'click',
       data: {

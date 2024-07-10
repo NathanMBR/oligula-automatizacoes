@@ -12,7 +12,7 @@ import { IconVariable } from '@tabler/icons-react'
 
 import type {
   ParseStringStepData,
-  StepDefaultData
+  StepData
 } from '../../../../types'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
@@ -21,10 +21,9 @@ import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
-type ParseStringStepPayload = ParseStringStepData & StepDefaultData
 export type ParseStringStepProps = {
   onClose: () => void
-  editingStep: ParseStringStepPayload | null
+  editingStep: StepData | null
 }
 
 export const ParseStringStep = (props: ParseStringStepProps) => {
@@ -44,10 +43,10 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
 
   const variables = listVariables()
 
-  const [parseText, setParseText] = useState(editingStep?.data.parseString || '')
-  const [selectedVariable, setSelectedVariable] = useState(editingStep?.data.readFrom || variables[0] || '')
-  const [separatorText, setSeparatorText] = useState(editingStep?.data.divider || '')
-  const [saveAs, setSaveAs] = useState(editingStep?.data.saveAs || '')
+  const [parseText, setParseText] = useState(editingStep?.type === 'parseString' ? editingStep.data.parseString : '')
+  const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'parseString' ? editingStep.data.readFrom : variables[0] || '')
+  const [separatorText, setSeparatorText] = useState(editingStep?.type === 'parseString' ? editingStep.data.divider : '')
+  const [saveAs, setSaveAs] = useState(editingStep?.type === 'parseString' ? editingStep.data.saveAs : '')
   const [variableError, setVariableError] = useState('')
 
   const parentId = useParentId()
@@ -74,7 +73,7 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
 
     const id = editingStep?.id || generateRandomID()
 
-    const parseStringStepPayload: ParseStringStepPayload = {
+    const parseStringStepPayload: ParseStringStepData = {
       id,
       type: 'parseString',
       data: {

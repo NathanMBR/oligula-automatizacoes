@@ -14,7 +14,7 @@ import {
 
 import type {
   ReadFileStepData,
-  StepDefaultData
+  StepData
 } from '../../../../types'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
@@ -22,10 +22,9 @@ import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
-type ReadFileStepPayload = ReadFileStepData & StepDefaultData
 export type ReadFileStepProps = {
   onClose: () => void
-  editingStep: ReadFileStepPayload | null
+  editingStep: StepData | null
 }
 
 export const ReadFileStep = (props: ReadFileStepProps) => {
@@ -34,8 +33,8 @@ export const ReadFileStep = (props: ReadFileStepProps) => {
     editingStep
   } = props
 
-  const [filename, setFilename] = useState(editingStep?.data.filename || '')
-  const [saveAs, setSaveAs] = useState(editingStep?.data.saveAs || '')
+  const [filename, setFilename] = useState(editingStep?.type === 'readFile' ? editingStep.data.filename : '')
+  const [saveAs, setSaveAs] = useState(editingStep?.type === 'readFile' ? editingStep.data.saveAs : '')
   const [fileContent, setFileContent] = useState('')
   const [variableError, setVariableError] = useState('')
   const [isReadingFile, setIsReadingFile] = useState(false)
@@ -78,7 +77,7 @@ export const ReadFileStep = (props: ReadFileStepProps) => {
 
     const id = editingStep?.id || generateRandomID()
 
-    const readFileStepPayload: ReadFileStepPayload = {
+    const readFileStepPayload: ReadFileStepData = {
       id,
       type: 'readFile',
       data: {

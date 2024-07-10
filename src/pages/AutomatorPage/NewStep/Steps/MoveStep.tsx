@@ -24,7 +24,7 @@ import {
 import type {
   MousePosition,
   MoveStepData,
-  StepDefaultData
+  StepData
 } from '../../../../types'
 import {
   checkMousePositionEquality,
@@ -39,10 +39,9 @@ import { StepFinishFooter } from '../StepFinishFooter'
 const MOUSE_SAMPLES = 5
 const SLEEP_TIME_IN_MS = 1_000
 
-type MoveStepPayload = MoveStepData & StepDefaultData
 export type MoveStepProps = {
   onClose: () => void
-  editingStep: MoveStepPayload | null
+  editingStep: StepData | null
 }
 
 export const MoveStep = (props: MoveStepProps) => {
@@ -52,7 +51,7 @@ export const MoveStep = (props: MoveStepProps) => {
   } = props
   const { appWindow } = tauriWindow
 
-  const [mousePosition, setMousePosition] = useState(editingStep?.data || { x: -1, y: -1 })
+  const [mousePosition, setMousePosition] = useState<MoveStepData['data']>(editingStep?.type === 'move' ? editingStep.data : { x: -1, y: -1 })
   const [isCapturingMousePosition, setIsCapturingMousePosition] = useState(false)
   const [positionError, setPositionError] = useState('')
 
@@ -121,7 +120,7 @@ export const MoveStep = (props: MoveStepProps) => {
     if (!isPositionValid)
       return setPositionError('Posição fora dos limites da tela')
 
-    const moveStepPayload: MoveStepPayload = {
+    const moveStepPayload: MoveStepData = {
       id: editingStep?.id || generateRandomID(),
       type: 'move',
       data: mousePosition

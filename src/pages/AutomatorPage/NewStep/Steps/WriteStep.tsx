@@ -9,7 +9,7 @@ import {
 } from 'react'
 
 import type {
-  StepDefaultData,
+  StepData,
   WriteStepData
 } from '../../../../types'
 import { AutomationContext } from '../../../../providers'
@@ -19,10 +19,9 @@ import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
-type WriteStepPayload = WriteStepData & StepDefaultData
 export type WriteStepProps = {
   onClose: () => void
-  editingStep: WriteStepPayload | null
+  editingStep: StepData | null
 }
 
 export const WriteStep = (props: WriteStepProps) => {
@@ -40,8 +39,8 @@ export const WriteStep = (props: WriteStepProps) => {
 
   const variables = listVariables()
 
-  const [writeText, setWriteText] = useState(editingStep?.data.text || '')
-  const [selectedVariable, setSelectedVariable] = useState(editingStep?.data.readFrom || variables[0] || '')
+  const [writeText, setWriteText] = useState(editingStep?.type === 'write' ? editingStep.data.text : '')
+  const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'write' ? editingStep.data.readFrom : variables[0] || '')
 
   const parentId = useParentId()
 
@@ -56,7 +55,7 @@ export const WriteStep = (props: WriteStepProps) => {
   const selectError = noVariablesError || manualInputError || ''
 
   const addWriteStep = () => {
-    const writeStepPayload: WriteStepPayload = {
+    const writeStepPayload: WriteStepData = {
       id: editingStep?.id || generateRandomID(),
       type: 'write',
       data: {

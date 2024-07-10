@@ -6,7 +6,7 @@ import { NumberInput } from '@mantine/core'
 
 import type {
   SleepStepData,
-  StepDefaultData
+  StepData
 } from '../../../../types'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
@@ -14,10 +14,9 @@ import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
-type SleepStepPayload = SleepStepData & StepDefaultData
 export type SleepStepProps = {
   onClose: () => void
-  editingStep: SleepStepPayload | null
+  editingStep: StepData | null
 }
 
 export const SleepStep = (props: SleepStepProps) => {
@@ -26,7 +25,7 @@ export const SleepStep = (props: SleepStepProps) => {
     editingStep
   } = props
 
-  const [timeInMs, setTimeInMs] = useState(editingStep?.data.time || 0)
+  const [timeInMs, setTimeInMs] = useState(editingStep?.type === 'sleep' ? editingStep.data.time : 0)
 
   const {
     addStep,
@@ -42,7 +41,7 @@ export const SleepStep = (props: SleepStepProps) => {
   const allowFinish = !Number.isNaN(timeInMs) && timeInMs > 0
 
   const addSleepStep = () => {
-    const sleepStepPayload: SleepStepPayload = {
+    const sleepStepPayload: SleepStepData = {
       id: editingStep?.id || generateRandomID(),
       type: 'sleep',
       data: {

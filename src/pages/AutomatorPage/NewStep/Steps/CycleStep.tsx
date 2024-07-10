@@ -10,7 +10,7 @@ import { IconVariable } from '@tabler/icons-react'
 
 import type {
   CycleStepData,
-  StepDefaultData
+  StepData
 } from '../../../../types'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
@@ -19,10 +19,9 @@ import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
-type CycleStepPayload = CycleStepData & StepDefaultData
 export type CycleStepProps = {
   onClose: () => void
-  editingStep: CycleStepPayload | null
+  editingStep: StepData | null
 }
 
 export const CycleStep = (props: CycleStepProps) => {
@@ -45,8 +44,8 @@ export const CycleStep = (props: CycleStepProps) => {
 
   const variables = listVariables()
 
-  const [selectedVariable, setSelectedVariable] = useState(editingStep?.data.iterable || variables[0] || '')
-  const [saveItemsAs, setSaveItemsAs] = useState(editingStep?.data.saveItemsAs || '')
+  const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'cycle' ? editingStep.data.iterable : variables[0] || '')
+  const [saveItemsAs, setSaveItemsAs] = useState(editingStep?.type === 'cycle' ? editingStep.data.saveItemsAs : '')
   const [variableError, setVariableError] = useState('')
 
   const noVariablesError = variables.length <= 0
@@ -69,12 +68,12 @@ export const CycleStep = (props: CycleStepProps) => {
 
     const id = editingStep?.id || generateRandomID()
 
-    const cycleStepPayload: CycleStepPayload = {
+    const cycleStepPayload: CycleStepData = {
       id,
       type: 'cycle',
       data: {
         iterable: selectedVariable,
-        steps: editingStep?.data.steps || [],
+        steps: editingStep?.type === 'cycle' ? editingStep.data.steps : [],
         saveItemsAs
       }
     }

@@ -78,7 +78,7 @@ export const NewStep = () => {
             stepType === 'move'
               ? <MoveStep
                 onClose={handleClose}
-                editingStep={editingStep?.type === 'move' ? editingStep : null}
+                editingStep={editingStep}
               />
               : null
           }
@@ -87,7 +87,7 @@ export const NewStep = () => {
             stepType === 'click'
               ? <ClickStep
                 onClose={handleClose}
-                editingStep={editingStep?.type === 'click' ? editingStep : null}
+                editingStep={editingStep}
               />
               : null
           }
@@ -96,7 +96,7 @@ export const NewStep = () => {
             stepType === 'write'
               ? <WriteStep
                 onClose={handleClose}
-                editingStep={editingStep?.type === 'write' ? editingStep : null}
+                editingStep={editingStep}
               />
               : null
           }
@@ -105,7 +105,7 @@ export const NewStep = () => {
             stepType === 'readFile'
               ? <ReadFileStep
                 onClose={handleClose}
-                editingStep={editingStep?.type === 'readFile' ? editingStep : null}
+                editingStep={editingStep}
               />
               : null
           }
@@ -114,7 +114,7 @@ export const NewStep = () => {
             stepType === 'parseString'
               ? <ParseStringStep
                 onClose={handleClose}
-                editingStep={editingStep?.type === 'parseString' ? editingStep : null}
+                editingStep={editingStep}
               />
               : null
           }
@@ -123,7 +123,7 @@ export const NewStep = () => {
             stepType === 'sleep'
               ? <SleepStep
                 onClose={handleClose}
-                editingStep={editingStep?.type === 'sleep' ? editingStep : null}
+                editingStep={editingStep}
               />
               : null
           }
@@ -134,7 +134,7 @@ export const NewStep = () => {
             stepType === 'cycle'
               ? <CycleStep
                 onClose={handleClose}
-                editingStep={editingStep?.type === 'cycle' ? editingStep : null}
+                editingStep={editingStep}
               />
               : null
           }
