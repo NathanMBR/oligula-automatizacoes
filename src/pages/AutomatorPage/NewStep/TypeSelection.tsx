@@ -66,7 +66,7 @@ export const TypeSelection = (props: TypeSelectionProps) => {
           },
 
           {
-            group: 'Condicionais / Repetições',
+            group: 'Diretrizes',
             items: typeCategories.statements.map(type => ({ value: type, label: StepTypes[type].title }))
           }
         ]}
