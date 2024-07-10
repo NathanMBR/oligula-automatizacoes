@@ -3,7 +3,7 @@ export type StepDefaultData = {
   id: number
 }
 
-export type StepData = StepDefaultData & (
+export type StepData =
   MoveStepData |
   ClickStepData |
   WriteStepData |
@@ -11,9 +11,10 @@ export type StepData = StepDefaultData & (
   ParseStringStepData |
   SleepStepData |
   CycleStepData
-)
 
-export type MoveStepData = {
+// actions
+
+export type MoveStepData = StepDefaultData & {
   type: 'move'
   data: {
     x: number
@@ -21,14 +22,14 @@ export type MoveStepData = {
   }
 }
 
-export type ClickStepData = {
+export type ClickStepData = StepDefaultData & {
   type: 'click'
   data: {
     button: 'left' | 'right' | 'middle'
   }
 }
 
-export type WriteStepData = {
+export type WriteStepData = StepDefaultData & {
   type: 'write'
   data: {
     text: string
@@ -36,7 +37,7 @@ export type WriteStepData = {
   }
 }
 
-export type ReadFileStepData = {
+export type ReadFileStepData = StepDefaultData & {
   type: 'readFile'
   data: {
     filename: string
@@ -44,7 +45,7 @@ export type ReadFileStepData = {
   }
 }
 
-export type ParseStringStepData = {
+export type ParseStringStepData = StepDefaultData & {
   type: 'parseString'
   data: {
     parseString: string
@@ -54,14 +55,16 @@ export type ParseStringStepData = {
   }
 }
 
-export type SleepStepData = {
+export type SleepStepData = StepDefaultData & {
   type: 'sleep'
   data: {
     time: number
   }
 }
 
-export type CycleStepData = {
+// statements
+
+export type CycleStepData = StepDefaultData & {
   type: 'cycle'
   data: {
     iterable: string
