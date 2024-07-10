@@ -10,21 +10,18 @@ Priority items are marked with an asterisk (\*).
 
 ### Steps
 
-- Add keyboard combination press step (`Ctrl + Shift + K` for example)
-- Add conditional step (`if`, `else`, `else if`; check if types can be done using inheritance)
-- Add sleep step
+- Add keyboard combination press step (for example, `Ctrl + Shift + K`)\*
+- Add conditional step (`if`, `else`, `else if`)\*
+- Add sleep step\*
+- Write text: fix not writing latin characters (check `enigo` crate)\*
+- Add types to variables (list and non-list)\*
 - Move mouse: Add "smooth movement" option
-- Write text: fix not writing latin characters (check `enigo` crate)
 
 ## Settings Menu
 
 ### Automator
 
 - Move mouse: add "capture delay" setting (default to 5s)
-
-### Update
-
-- Add button to update\*
 
 ## Spreadsheet Formatter
 
@@ -43,3 +40,9 @@ Priority items are marked with an asterisk (\*).
 - Add the most possible number of seals in an A4 paper sheet
 - Print paper sheet (if possible)
 - Generate `.png` / `.docx` / `.pdf` file
+
+## Logging
+
+### General
+
+- Find a way to log messages inside a file\*
