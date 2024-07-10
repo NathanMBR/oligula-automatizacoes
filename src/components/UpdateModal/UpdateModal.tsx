@@ -16,19 +16,34 @@ import { UpdatingBody } from './UpdatingBody'
 import { SuccessBody } from './SuccessBody'
 import { FailureBody } from './FailureBody'
 
-export const UpdateModal = () => {
+export type UpdateModalProps = {
+  isOpenExternally?: boolean
+  setIsOpenExternally?: (isOpen: boolean) => void
+}
+
+export const UpdateModal = (props: UpdateModalProps) => {
   type UpdateState =
     'AVAILABLE' |
     'UPDATING' |
     'SUCCESS' |
     'FAILURE'
 
+  const {
+    isOpenExternally = false,
+    setIsOpenExternally
+  } = props
+
   const { app } = useContext(PreloadContext)
 
-  const [open, isOpen] = useState(app.update.available && app.settings.data.showUpdateNotification)
+  const [isOpen, setIsOpen] = useState(app.update.available && app.settings.data.showUpdateNotification)
   const [updateState, setUpdateState] = useState<UpdateState>('AVAILABLE')
 
-  const handleClose = () => isOpen(false)
+  const handleClose = () => {
+    if (setIsOpenExternally)
+      setIsOpenExternally(false)
+
+    setIsOpen(false)
+  }
 
   const handleUpdate = () => {
     setUpdateState('UPDATING')
@@ -54,7 +69,7 @@ export const UpdateModal = () => {
 
   return (
     <Modal.Root
-      opened={open}
+      opened={isOpen || isOpenExternally}
       onClose={handleClose}
       closeOnEscape={!isUpdating}
       closeOnClickOutside={!isUpdating}
