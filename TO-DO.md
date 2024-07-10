@@ -12,7 +12,6 @@ Priority items are marked with an asterisk (\*).
 
 - Add keyboard combination press step (for example, `Ctrl + Shift + K`)\*
 - Add conditional step (`if`, `else`, `else if`)\*
-- Add sleep step\*
 - Write text: fix not writing latin characters (check `enigo` crate)\*
 - Add types to variables (list and non-list)\*
 - Move mouse: Add "smooth movement" option
