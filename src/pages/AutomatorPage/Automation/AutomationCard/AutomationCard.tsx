@@ -26,6 +26,7 @@ import type {
   WriteStepData,
   ReadFileStepData,
   ParseStringStepData,
+  SleepStepData,
   CycleStepData,
   StepData
 } from '../../../../types'
@@ -143,6 +144,10 @@ export namespace AutomationCard {
     QUOTE: 50
   }
 
+  const ONE_SECOND_IN_MS = 1000
+
+  // actions
+
   export const Move = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & MoveStepData['data']) => <AutomationCardBase
     icon={<StepTypes.move.icon />}
     title={StepTypes.move.title}
@@ -238,6 +243,19 @@ export namespace AutomationCard {
       </Group>
     }
   />
+
+  export const Sleep = (props: Required<Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'>> & SleepStepData['data']) => <AutomationCardBase
+    icon={<StepTypes.sleep.icon />}
+    title={StepTypes.sleep.title}
+    position={props.position}
+    currentStepId={props.currentStepId}
+    index={props.index}
+    onEdit={props.onEdit}
+    onRemove={props.onRemove}
+    label={`durante ${(props.time / ONE_SECOND_IN_MS).toString().split('.').join(',')} segundo${props.time / ONE_SECOND_IN_MS === 1 ? '' : 's'}`}
+  />
+
+  // statements
 
   export const Cycle = (props: Required<Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'>> & CycleStepData['data']) => <AutomationCardBase
     icon={<StepTypes.cycle.icon />}

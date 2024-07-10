@@ -18,6 +18,7 @@ import {
   WriteStep,
   ReadFileStep,
   ParseStringStep,
+  SleepStep,
 
   // statements
   CycleStep
@@ -114,6 +115,15 @@ export const NewStep = () => {
               ? <ParseStringStep
                 onClose={handleClose}
                 editingStep={editingStep?.type === 'parseString' ? editingStep : null}
+              />
+              : null
+          }
+
+          {
+            stepType === 'sleep'
+              ? <SleepStep
+                onClose={handleClose}
+                editingStep={editingStep?.type === 'sleep' ? editingStep : null}
               />
               : null
           }

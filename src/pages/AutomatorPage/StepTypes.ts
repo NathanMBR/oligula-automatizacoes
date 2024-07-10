@@ -5,18 +5,19 @@ import {
   IconPencil,
   IconFileText,
   IconScissors,
+  IconHourglass,
   IconRotateClockwise
 } from '@tabler/icons-react'
 
 import type { StepData } from '../../types'
 
-export const StepTypes: Record<
-  StepData['type'],
-  {
-    title: string
-    icon: Icon
-  }
-> = {
+export type StepTypesModel = Record<StepData['type'], {
+  title: string
+  icon: Icon
+}>
+
+export const StepTypes = {
+  // actions
   move: {
     title:'Mover o mouse',
     icon: IconMouse2
@@ -42,8 +43,14 @@ export const StepTypes: Record<
     icon: IconScissors
   },
 
+  sleep: {
+    title: 'Esperar',
+    icon: IconHourglass
+  },
+
+  // statements
   cycle: {
     title: 'Repetir passos para vários valores',
     icon: IconRotateClockwise
   }
-}
+} as const satisfies StepTypesModel

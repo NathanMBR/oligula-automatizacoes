@@ -9,6 +9,7 @@ export type StepData = StepDefaultData & (
   WriteStepData |
   ReadFileStepData |
   ParseStringStepData |
+  SleepStepData |
   CycleStepData
 )
 
@@ -50,6 +51,13 @@ export type ParseStringStepData = {
     readFrom: string
     divider: string
     saveAs: string
+  }
+}
+
+export type SleepStepData = {
+  type: 'sleep'
+  data: {
+    time: number
   }
 }
 

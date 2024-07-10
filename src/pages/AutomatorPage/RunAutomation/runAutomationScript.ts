@@ -30,7 +30,10 @@ export const runAutomationScript = async (data: RunAutomationData) => {
   }
 
   for (const step of steps) {
-    await sleep(globalTimeBetweenStepsInMs)
+    if (globalTimeBetweenStepsInMs > 0)
+      await sleep(globalTimeBetweenStepsInMs)
+
+    // actions
 
     if (step.type === 'move') {
       console.log(`Running step "move" to position x: ${step.data.x}, y: ${step.data.y}`)
@@ -52,7 +55,7 @@ export const runAutomationScript = async (data: RunAutomationData) => {
         : step.data.text
 
       if (typeof textToWrite !== 'string')
-        return console.log(`Unexpected Error: Variable "${step.data.readFrom}" isn't a text (got ${typeof textToWrite})`)
+        return console.error(`Unexpected Error: Variable "${step.data.readFrom}" isn't a text (got ${typeof textToWrite})`)
 
       console.log(`Running step "write" with text "${ensureCharactersLimit(textToWrite, 50)}"`)
 
@@ -99,6 +102,17 @@ export const runAutomationScript = async (data: RunAutomationData) => {
 
       continue
     }
+
+    if (step.type === 'sleep') {
+      console.log(`Running step "sleep" during ${step.data.time} ms`)
+
+      if (step.data.time > 0)
+        await sleep(step.data.time)
+
+      continue
+    }
+
+    // statements
 
     if (step.type === 'cycle') {
       const iterable = getVariable(step.data.iterable)

@@ -44,6 +44,8 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                     type
                   } = step
 
+                  // actions
+
                   const position = getStepPositionString(id)
                   const onEdit = () => {
                     setIsAddingStep(true)
@@ -116,6 +118,19 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                       onEdit={onEdit}
                       onRemove={onRemove}
                     />
+
+                  if (type === 'sleep')
+                    return <AutomationCard.Sleep
+                      key={id}
+                      position={position}
+                      currentStepId={step.id}
+                      index={index}
+                      time={step.data.time}
+                      onEdit={onEdit}
+                      onRemove={onRemove}
+                    />
+
+                  // statements
 
                   if (type === 'cycle')
                     return <AutomationCard.Cycle

@@ -125,6 +125,20 @@ const validateSteps = (steps: unknown): boolean => {
         return false
     }
 
+    else if (stepType === 'sleep') {
+      if (!('time' in step.data))
+        return false
+
+      if (typeof step.data.time !== 'number')
+        return false
+
+      if (Number.isNaN(step.data.time))
+        return false
+
+      if (step.data.time < 0)
+        return false
+    }
+
     else if (stepType === 'cycle') {
       if (!('iterable' in step.data))
         return false

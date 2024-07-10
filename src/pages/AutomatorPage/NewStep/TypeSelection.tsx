@@ -34,7 +34,8 @@ export const TypeSelection = (props: TypeSelectionProps) => {
       'click',
       'write',
       'readFile',
-      'parseString'
+      'parseString',
+      'sleep'
     ],
 
     statements: [
@@ -54,7 +55,7 @@ export const TypeSelection = (props: TypeSelectionProps) => {
       <Select
         label='Selecione o tipo'
         checkIconPosition='right'
-        maxDropdownHeight={300}
+        maxDropdownHeight={275}
         allowDeselect={false}
         value={stepType}
         leftSection={<selectedType.icon {...iconProps} />}
