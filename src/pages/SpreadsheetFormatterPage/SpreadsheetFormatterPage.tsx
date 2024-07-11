@@ -12,10 +12,10 @@ export const SpreadsheetFormatterPage = () => {
   }, [])
 
   return (
-    <Navbar selectedOption='Formatador de planilhas'>
-      <Header>
-        <p>Teste</p>
-      </Header>
-    </Navbar>
+    // <Navbar selectedOption='Formatador de planilhas'>
+    <Header>
+      <p>Teste</p>
+    </Header>
+    // </Navbar>
   )
 }
