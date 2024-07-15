@@ -28,7 +28,9 @@ import type {
   ParseStringStepData,
   SleepStepData,
   CycleStepData,
-  StepData
+  ConditionalStepData,
+  StepData,
+  ConditionalStepConditionOperator
 } from '../../../../types'
 import { ensureCharactersLimit } from '../../../../helpers'
 
@@ -46,17 +48,17 @@ type AutomationCardPropsBase = {
   onRemove: () => void
 }
 
-type AutomationCardPropsWithSteps = AutomationCardPropsBase & {
-  steps: Array<StepData>
-}
-
 type AutomationCardPropsWithoutSteps = AutomationCardPropsBase & {
   steps?: never
 }
 
+type AutomationCardPropsWithSteps = AutomationCardPropsBase & {
+  steps: Array<StepData>
+}
+
 export type AutomationCardProps =
-  AutomationCardPropsWithSteps |
-  AutomationCardPropsWithoutSteps
+  AutomationCardPropsWithoutSteps |
+  AutomationCardPropsWithSteps
 
 const AutomationCardBase = (props: AutomationCardProps) => {
   const {
@@ -66,7 +68,9 @@ const AutomationCardBase = (props: AutomationCardProps) => {
     label,
     currentStepId,
     index,
+
     steps,
+
     onEdit,
     onRemove
   } = props
@@ -267,13 +271,55 @@ export namespace AutomationCard {
     onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={
-      <Group gap={4}>
-        <Text size='sm'>
-          armazenados na variável <Badge color='orange'>{ensureCharactersLimit(props.iterable, MAX_CHAR_LIMITS.BADGE)}</Badge>,
-
-          e atribuir cada um à variável <Badge color='pink'>{ensureCharactersLimit(props.saveItemsAs, MAX_CHAR_LIMITS.BADGE)}</Badge>
-        </Text>
-      </Group>
+      <Text size='sm'>
+        armazenados na variável <Badge color='orange'>{ensureCharactersLimit(props.iterable, MAX_CHAR_LIMITS.BADGE)}</Badge>,
+        e atribuir cada um à variável <Badge color='pink'>{ensureCharactersLimit(props.saveItemsAs, MAX_CHAR_LIMITS.BADGE)}</Badge>
+      </Text>
     }
   />
+
+  export const Conditional = (props: Required<Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'>> & ConditionalStepData['data']) => {
+    const ConditionOperatorLabels: Record<ConditionalStepConditionOperator, string> = {
+      equal: 'igual a',
+      notEqual: 'diferente d',
+      greaterThan: 'maior que ',
+      lesserThan: 'menor que ',
+      greaterOrEqualThan: 'maior ou igual a',
+      lesserOrEqualThan: 'menor ou igual a'
+    }
+
+    const conditionLeftSide = props.condition.leftSide.origin === 'value'
+      ? <>
+        o valor <i>&quot;{ensureCharactersLimit(props.condition.leftSide.value, MAX_CHAR_LIMITS.QUOTE)}&quot;</i>
+      </>
+      : <>
+        o valor da variável <Badge color='orange'>{ensureCharactersLimit(props.condition.leftSide.readFrom, MAX_CHAR_LIMITS.BADGE)}</Badge>
+      </>
+
+    const conditionRightSide = props.condition.rightSide.origin === 'value'
+      ? <>
+        o valor <i>&quot;{ensureCharactersLimit(props.condition.rightSide.value, MAX_CHAR_LIMITS.QUOTE)}&quot;</i>
+      </>
+      : <>
+        o valor da variável <Badge color='orange'>{ensureCharactersLimit(props.condition.rightSide.readFrom, MAX_CHAR_LIMITS.BADGE)}</Badge>
+      </>
+
+    return (
+      <AutomationCardBase
+        icon={<StepTypes.conditional.icon />}
+        title={StepTypes.conditional.title}
+        position={props.position}
+        currentStepId={props.currentStepId}
+        steps={props.steps}
+        index={props.index}
+        onEdit={props.onEdit}
+        onRemove={props.onRemove}
+        label={
+          <>
+            <Text size='sm'>caso {conditionLeftSide} seja {ConditionOperatorLabels[props.condition.operator]}{conditionRightSide}</Text>
+          </>
+        }
+      />
+    )
+  }
 }

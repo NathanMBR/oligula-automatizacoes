@@ -8,3 +8,4 @@ export * from './SleepStep'
 
 // statements
 export * from './CycleStep'
+export * from './ConditionalStep'

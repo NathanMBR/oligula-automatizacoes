@@ -21,7 +21,8 @@ import {
   SleepStep,
 
   // statements
-  CycleStep
+  CycleStep,
+  ConditionalStep
 } from './Steps'
 import { TypeSelection } from './TypeSelection'
 
@@ -133,6 +134,15 @@ export const NewStep = () => {
           {
             stepType === 'cycle'
               ? <CycleStep
+                onClose={handleClose}
+                editingStep={editingStep}
+              />
+              : null
+          }
+
+          {
+            stepType === 'conditional'
+              ? <ConditionalStep
                 onClose={handleClose}
                 editingStep={editingStep}
               />

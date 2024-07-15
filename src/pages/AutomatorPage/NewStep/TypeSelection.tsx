@@ -39,7 +39,8 @@ export const TypeSelection = (props: TypeSelectionProps) => {
     ],
 
     statements: [
-      'cycle'
+      'cycle',
+      'conditional'
     ]
   } satisfies Record<string, Array<StepData['type']>>
 

@@ -10,7 +10,8 @@ export type StepData =
   ReadFileStepData |
   ParseStringStepData |
   SleepStepData |
-  CycleStepData
+  CycleStepData |
+  ConditionalStepData
 
 // actions
 
@@ -69,6 +70,36 @@ export type CycleStepData = StepDefaultData & {
   data: {
     iterable: string
     saveItemsAs: string
+    steps: Array<StepData>
+  }
+}
+
+export type ConditionalStepConditionOperator =
+  'equal' |
+  'notEqual' |
+  'greaterThan' |
+  'lesserThan' |
+  'greaterOrEqualThan' |
+  'lesserOrEqualThan'
+
+type ConditionalStepConditionSide = {
+  origin: 'variable'
+  readFrom: string
+} | {
+  origin: 'value'
+  value: string
+}
+
+type ConditionalStepCondition = {
+  leftSide: ConditionalStepConditionSide
+  operator: ConditionalStepConditionOperator
+  rightSide: ConditionalStepConditionSide
+}
+
+export type ConditionalStepData = StepDefaultData & {
+  type: 'conditional'
+  data: {
+    condition: ConditionalStepCondition
     steps: Array<StepData>
   }
 }

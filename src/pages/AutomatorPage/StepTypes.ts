@@ -6,7 +6,8 @@ import {
   IconFileText,
   IconScissors,
   IconHourglass,
-  IconRotateClockwise
+  IconRotateClockwise,
+  IconArrowRampRight2
 } from '@tabler/icons-react'
 
 import type { StepData } from '../../types'
@@ -52,5 +53,10 @@ export const StepTypes = {
   cycle: {
     title: 'Repetir passos para vários valores',
     icon: IconRotateClockwise
+  },
+
+  conditional: {
+    title: 'Executar passos condicionalmente',
+    icon: IconArrowRampRight2
   }
 } as const satisfies StepTypesModel

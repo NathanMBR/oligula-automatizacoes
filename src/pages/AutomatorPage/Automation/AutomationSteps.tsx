@@ -144,6 +144,18 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                       onEdit={onEdit}
                       onRemove={onRemove}
                     />
+
+                  if (type === 'conditional')
+                    return <AutomationCard.Conditional
+                      key={id}
+                      position={position}
+                      currentStepId={step.id}
+                      index={index}
+                      condition={step.data.condition}
+                      steps={step.data.steps}
+                      onEdit={onEdit}
+                      onRemove={onRemove}
+                    />
                 })
               }
 

@@ -142,6 +142,57 @@ export const runAutomationScript = async (data: RunAutomationData) => {
 
       continue
     }
+
+    if (step.type === 'conditional') {
+      console.log('Running step "conditional"')
+
+      const {
+        leftSide,
+        operator,
+        rightSide
+      } = step.data.condition
+
+      let leftValue = leftSide.origin === 'value'
+        ? leftSide.value
+        : getVariable(leftSide.readFrom)?.value
+
+      let rightValue = rightSide.origin === 'value'
+        ? rightSide.value
+        : getVariable(rightSide.readFrom)?.value
+
+      const numberOnlyConditionOperators: Array<typeof operator> = [
+        'greaterThan',
+        'lesserThan',
+        'greaterOrEqualThan',
+        'lesserOrEqualThan'
+      ]
+
+      if (numberOnlyConditionOperators.includes(operator)) {
+        leftValue = Number(leftValue)
+        rightValue = Number(rightValue)
+      }
+
+      type ResolverFn = (leftValue: any, rightValue: any) => boolean
+      const operatorResolvers: Record<typeof operator, ResolverFn> = {
+        equal: (left, right) => left === right,
+        notEqual: (left, right) => left !== right,
+        greaterThan: (left, right) => left > right,
+        lesserThan: (left, right) => left < right,
+        greaterOrEqualThan: (left, right) => left >= right,
+        lesserOrEqualThan: (left, right) => left <= right
+      }
+
+      const operatorResolver = operatorResolvers[operator]
+      const shouldExecuteConditionalSteps = operatorResolver(leftValue, rightValue)
+      if (!shouldExecuteConditionalSteps)
+        continue
+
+      await runAutomationScript({
+        globalTimeBetweenStepsInMs,
+        steps: step.data.steps,
+        variables
+      })
+    }
   }
 }
 /* eslint-enable no-console */

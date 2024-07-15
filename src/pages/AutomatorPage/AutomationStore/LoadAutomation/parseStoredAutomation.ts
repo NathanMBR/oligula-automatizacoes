@@ -159,6 +159,91 @@ const validateSteps = (steps: unknown): boolean => {
         return false
     }
 
+    else if (stepType === 'conditional') {
+      const validOperators = [
+        'equal',
+        'notEqual',
+        'greaterThan',
+        'lesserThan',
+        'greaterOrEqualThan',
+        'lesserOrEqualThan'
+      ]
+
+      const validateSide = (side: unknown): boolean => {
+        if (!side)
+          return false
+
+        if (typeof side !== 'object')
+          return false
+
+        if (Array.isArray(side))
+          return false
+
+        if (!('origin' in side))
+          return false
+
+        if (typeof side.origin !== 'string')
+          return false
+
+        if (side.origin === 'variable') {
+          if (!('readFrom' in side))
+            return false
+
+          if (typeof side.readFrom !== 'string')
+            return false
+        }
+
+        else if (side.origin === 'value') {
+          if (!('value' in side))
+            return false
+
+          if (typeof side.value !== 'string')
+            return false
+        }
+
+        else
+          return false
+
+        return true
+      }
+
+      if (!('condition' in step.data))
+        return false
+
+      if (typeof step.data.condition !== 'object')
+        return false
+
+      if (Array.isArray(step.data.condition))
+        return false
+
+      if (!('leftSide' in step.data.condition))
+        return false
+
+      if (!validateSide(step.data.condition.leftSide))
+        return false
+
+      if (!('operator' in step.data.condition))
+        return false
+
+      if (typeof step.data.condition.operator !== 'string')
+        return false
+
+      if (!validOperators.includes(step.data.condition.operator))
+        return false
+
+      if (!('rightSide' in step.data.condition))
+        return false
+
+      if (!validateSide(step.data.condition.rightSide))
+        return false
+
+      if (!('steps' in step.data))
+        return false
+
+      if (!validateSteps(step.data.steps))
+        return false
+    }
+
     else
       return false
   }
