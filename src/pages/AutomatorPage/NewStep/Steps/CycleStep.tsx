@@ -76,9 +76,11 @@ export const CycleStep = (props: CycleStepProps) => {
       id,
       type: 'cycle',
       data: {
+        saveItemsAs,
         iterable: selectedVariable,
-        steps: editingStep?.type === 'cycle' ? editingStep.data.steps : [],
-        saveItemsAs
+        steps: editingStep && 'steps' in editingStep.data
+          ? editingStep.data.steps
+          : []
       }
     }
 
