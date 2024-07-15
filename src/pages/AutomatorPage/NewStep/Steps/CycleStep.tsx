@@ -35,9 +35,8 @@ export const CycleStep = (props: CycleStepProps) => {
     editStep,
 
     listVariables,
-    hasVariable,
-    setVariable,
-    deleteVariablesByStepId
+    getVariable,
+    setVariable
   } = useContext(AutomationContext)
 
   const parentId = useParentId()
@@ -60,11 +59,16 @@ export const CycleStep = (props: CycleStepProps) => {
     variableError === ''
 
   const addCycleStep = () => {
-    if (editingStep)
-      deleteVariablesByStepId(editingStep.id)
+    const saveAsVariable = getVariable(saveItemsAs)
+    if (saveAsVariable) {
+      const alreadyExistentVariableErrorMessage = 'Nome de variável já utilizado'
 
-    if (hasVariable(saveItemsAs))
-      return setVariableError('Nome de variável já utilizado')
+      if (!editingStep)
+        return setVariableError(alreadyExistentVariableErrorMessage)
+
+      if (saveAsVariable.ownerId !== editingStep.id)
+        return setVariableError(alreadyExistentVariableErrorMessage)
+    }
 
     const id = editingStep?.id || generateRandomID()
 

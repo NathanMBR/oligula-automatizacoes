@@ -37,7 +37,7 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
     editStep,
 
     listVariables,
-    hasVariable,
+    getVariable,
     setVariable
   } = useContext(AutomationContext)
 
@@ -68,8 +68,16 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
   const selectError = noVariablesError || manualInputError || ''
 
   const addParseStringStep = () => {
-    if (hasVariable(saveAs))
-      return setVariableError('Nome de variável já utilizado')
+    const saveAsVariable = getVariable(saveAs)
+    if (saveAsVariable) {
+      const alreadyExistentVariableErrorMessage = 'Nome de variável já utilizado'
+
+      if (!editingStep)
+        return setVariableError(alreadyExistentVariableErrorMessage)
+
+      if (saveAsVariable.ownerId !== editingStep.id)
+        return setVariableError(alreadyExistentVariableErrorMessage)
+    }
 
     const id = editingStep?.id || generateRandomID()
 
