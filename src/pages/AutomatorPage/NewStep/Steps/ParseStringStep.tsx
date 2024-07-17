@@ -14,12 +14,12 @@ import type {
   ParseStringStepData,
   StepData
 } from '../../../../types'
-import { AutomationContext } from '../../../../providers'
-import { generateRandomID } from '../../../../helpers'
 import {
   ClearableTextInput,
   ClearableTextArea
 } from '../../../../components'
+import { AutomationContext } from '../../../../providers'
+import { generateRandomID } from '../../../../helpers'
 import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
