@@ -13,19 +13,19 @@ Priority items are marked with an asterisk (\*).
 ### Schema Saving System (SSS)
 
 - Confirm delete before executing
+- Load schema: Add message when no saved/valid schemas are found
 
 ### Steps
 
-- Add keyboard combination press step (for example, `Ctrl + Shift + K`)\*
 - Add types to variables (list and non-list)\*
-- Add destructuring list variable step\*
-- Add set variable step\*
-- Remove read file step, and make `ClearableTextInput` receive file button\*
+- Add destruct list variable step\*
+- Add keyboard combination press step (for example, `Ctrl + Shift + K`)\*
 - Add while step
 - Add error modal for running steps
 - Add minimize app step
 - Check UI responsiveness
 - Write text: fix not writing latin characters (check `enigo` crate)
+- Merge `AutomationCard` options in a menu
 - Move mouse: Add "smooth movement" option
 - Add notification when automation finishes run
 - Add notification if automation run fails
