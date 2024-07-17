@@ -76,7 +76,7 @@ export const WriteStep = (props: WriteStepProps) => {
     <>
       <Stack justify='space-between'>
         <ClearableTextArea
-          label='Inserir dado manual'
+          label='Escrever texto manual'
           placeholder='Digite o dado a ser inserido'
           value={writeText}
           onChange={text => setWriteText(text)}
@@ -86,7 +86,7 @@ export const WriteStep = (props: WriteStepProps) => {
         <Divider label='ou' />
 
         <Select
-          label='Inserir dado de uma variável'
+          label='Escrever texto armazenado em uma variável'
           checkIconPosition='right'
           data={variables}
           error={selectError}
