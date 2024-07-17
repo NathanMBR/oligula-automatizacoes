@@ -63,9 +63,9 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                       key={id}
                       position={position}
                       currentStepId={step.id}
-                      index={index}
                       x={step.data.x}
                       y={step.data.y}
+                      index={index}
                       onEdit={onEdit}
                       onRemove={onRemove}
                     />
@@ -74,9 +74,9 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                     return <AutomationCard.Click
                       key={id}
                       position={position}
+                      button={step.data.button}
                       currentStepId={step.id}
                       index={index}
-                      button={step.data.button}
                       onEdit={onEdit}
                       onRemove={onRemove}
                     />
@@ -85,10 +85,10 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                     return <AutomationCard.Write
                       key={id}
                       position={position}
-                      currentStepId={step.id}
-                      index={index}
-                      text={step.data.text}
                       readFrom={step.data.readFrom}
+                      currentStepId={step.id}
+                      text={step.data.text}
+                      index={index}
                       onEdit={onEdit}
                       onRemove={onRemove}
                     />
@@ -97,12 +97,12 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                     return <AutomationCard.ParseString
                       key={id}
                       position={position}
-                      currentStepId={step.id}
-                      index={index}
                       parseString={step.data.parseString}
                       readFrom={step.data.readFrom}
                       divider={step.data.divider}
                       saveAs={step.data.saveAs}
+                      currentStepId={step.id}
+                      index={index}
                       onEdit={onEdit}
                       onRemove={onRemove}
                     />
@@ -112,8 +112,8 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                       key={id}
                       position={position}
                       currentStepId={step.id}
-                      index={index}
                       time={step.data.time}
+                      index={index}
                       onEdit={onEdit}
                       onRemove={onRemove}
                     />
@@ -124,11 +124,11 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                     return <AutomationCard.Cycle
                       key={id}
                       position={position}
-                      currentStepId={step.id}
-                      index={index}
                       saveItemsAs={step.data.saveItemsAs}
                       iterable={step.data.iterable}
                       steps={step.data.steps}
+                      currentStepId={step.id}
+                      index={index}
                       onEdit={onEdit}
                       onRemove={onRemove}
                     />
@@ -137,10 +137,24 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                     return <AutomationCard.Conditional
                       key={id}
                       position={position}
-                      currentStepId={step.id}
-                      index={index}
                       condition={step.data.condition}
                       steps={step.data.steps}
+                      currentStepId={step.id}
+                      index={index}
+                      onEdit={onEdit}
+                      onRemove={onRemove}
+                    />
+
+                  // variables
+
+                  if (type === 'setVariable')
+                    return <AutomationCard.SetVariable
+                      key={id}
+                      position={position}
+                      saveAs={step.data.saveAs}
+                      value={step.data.value}
+                      currentStepId={step.id}
+                      index={index}
                       onEdit={onEdit}
                       onRemove={onRemove}
                     />

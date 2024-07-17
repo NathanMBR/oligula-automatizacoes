@@ -9,6 +9,7 @@ export type StepData =
   WriteStepData |
   ParseStringStepData |
   SleepStepData |
+  SetVariableStepData |
   CycleStepData |
   ConditionalStepData
 
@@ -92,5 +93,15 @@ export type ConditionalStepData = StepDefaultData & {
   data: {
     condition: ConditionalStepCondition
     steps: Array<StepData>
+  }
+}
+
+// variables
+
+export type SetVariableStepData = StepDefaultData & {
+  type: 'setVariable'
+  data: {
+    value: string
+    saveAs: string
   }
 }

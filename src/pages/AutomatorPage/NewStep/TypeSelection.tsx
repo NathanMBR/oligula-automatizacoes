@@ -40,6 +40,10 @@ export const TypeSelection = (props: TypeSelectionProps) => {
     statements: [
       'cycle',
       'conditional'
+    ],
+
+    variables: [
+      'setVariable'
     ]
   } satisfies Record<string, Array<StepData['type']>>
 
@@ -49,6 +53,11 @@ export const TypeSelection = (props: TypeSelectionProps) => {
     size: 18,
     stroke: 1.5
   }
+
+  const mapSteps = (type: StepData['type']) => ({
+    value: type,
+    label: StepTypes[type].title
+  })
 
   return (
     <>
@@ -63,12 +72,17 @@ export const TypeSelection = (props: TypeSelectionProps) => {
         data={[
           {
             group: 'Ações',
-            items: typeCategories.actions.map(type => ({ value: type, label: StepTypes[type].title }))
+            items: typeCategories.actions.map(mapSteps)
           },
 
           {
             group: 'Diretrizes',
-            items: typeCategories.statements.map(type => ({ value: type, label: StepTypes[type].title }))
+            items: typeCategories.statements.map(mapSteps)
+          },
+
+          {
+            group: 'Variáveis',
+            items: typeCategories.variables.map(mapSteps)
           }
         ]}
         renderOption={renderOptions => {

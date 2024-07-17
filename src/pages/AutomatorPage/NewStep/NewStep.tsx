@@ -21,7 +21,10 @@ import {
 
   // statements
   CycleStep,
-  ConditionalStep
+  ConditionalStep,
+
+  // variables
+  SetVariableStep
 } from './Steps'
 import { TypeSelection } from './TypeSelection'
 
@@ -133,6 +136,17 @@ export const NewStep = () => {
           {
             stepType === 'conditional'
               ? <ConditionalStep
+                onClose={handleClose}
+                editingStep={editingStep}
+              />
+              : null
+          }
+
+          {/* variables */}
+
+          {
+            stepType === 'setVariable'
+              ? <SetVariableStep
                 onClose={handleClose}
                 editingStep={editingStep}
               />

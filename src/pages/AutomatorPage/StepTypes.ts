@@ -6,7 +6,8 @@ import {
   IconScissors,
   IconHourglass,
   IconRotateClockwise,
-  IconArrowRampRight2
+  IconArrowRampRight2,
+  IconVariable
 } from '@tabler/icons-react'
 
 import type { StepData } from '../../types'
@@ -52,5 +53,11 @@ export const StepTypes = {
   conditional: {
     title: 'Executar passos condicionalmente',
     icon: IconArrowRampRight2
+  },
+
+  // variables
+  setVariable: {
+    title: 'Definir variável',
+    icon: IconVariable
   }
 } as const satisfies StepTypesModel

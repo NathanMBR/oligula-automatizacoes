@@ -21,15 +21,21 @@ import { useNavigate } from 'react-router-dom'
 import { Draggable } from '@hello-pangea/dnd'
 
 import type {
+  // steps
   MoveStepData,
   ClickStepData,
   WriteStepData,
   ParseStringStepData,
   SleepStepData,
+
+  // statements
   CycleStepData,
   ConditionalStepData,
   StepData,
-  ConditionalStepConditionOperator
+  ConditionalStepConditionOperator,
+
+  // variables
+  SetVariableStepData
 } from '../../../../types'
 import { ensureCharactersLimit } from '../../../../helpers'
 
@@ -153,9 +159,9 @@ export namespace AutomationCard {
 
   export const Move = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & MoveStepData['data']) => <AutomationCardBase
     icon={<StepTypes.move.icon />}
+    currentStepId={props.currentStepId}
     title={StepTypes.move.title}
     position={props.position}
-    currentStepId={props.currentStepId}
     index={props.index}
     onEdit={props.onEdit}
     onRemove={props.onRemove}
@@ -179,9 +185,9 @@ export namespace AutomationCard {
     return (
       <AutomationCardBase
         icon={<StepTypes.click.icon />}
+        currentStepId={props.currentStepId}
         title={StepTypes.click.title}
         position={position}
-        currentStepId={props.currentStepId}
         index={props.index}
         onEdit={onEdit}
         onRemove={onRemove}
@@ -192,9 +198,9 @@ export namespace AutomationCard {
 
   export const Write = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & WriteStepData['data']) => <AutomationCardBase
     icon={<StepTypes.write.icon />}
+    currentStepId={props.currentStepId}
     title={StepTypes.write.title}
     position={props.position}
-    currentStepId={props.currentStepId}
     index={props.index}
     onEdit={props.onEdit}
     onRemove={props.onRemove}
@@ -211,9 +217,9 @@ export namespace AutomationCard {
 
   export const ParseString = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & ParseStringStepData['data']) => <AutomationCardBase
     icon={<StepTypes.parseString.icon />}
+    currentStepId={props.currentStepId}
     title={StepTypes.parseString.title}
     position={props.position}
-    currentStepId={props.currentStepId}
     index={props.index}
     onEdit={props.onEdit}
     onRemove={props.onRemove}
@@ -234,9 +240,9 @@ export namespace AutomationCard {
 
   export const Sleep = (props: Required<Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'>> & SleepStepData['data']) => <AutomationCardBase
     icon={<StepTypes.sleep.icon />}
+    currentStepId={props.currentStepId}
     title={StepTypes.sleep.title}
     position={props.position}
-    currentStepId={props.currentStepId}
     index={props.index}
     onEdit={props.onEdit}
     onRemove={props.onRemove}
@@ -247,10 +253,10 @@ export namespace AutomationCard {
 
   export const Cycle = (props: Required<Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'>> & CycleStepData['data']) => <AutomationCardBase
     icon={<StepTypes.cycle.icon />}
-    title={StepTypes.cycle.title}
-    steps={props.steps}
-    position={props.position}
     currentStepId={props.currentStepId}
+    title={StepTypes.cycle.title}
+    position={props.position}
+    steps={props.steps}
     index={props.index}
     onEdit={props.onEdit}
     onRemove={props.onRemove}
@@ -291,9 +297,9 @@ export namespace AutomationCard {
     return (
       <AutomationCardBase
         icon={<StepTypes.conditional.icon />}
+        currentStepId={props.currentStepId}
         title={StepTypes.conditional.title}
         position={props.position}
-        currentStepId={props.currentStepId}
         steps={props.steps}
         index={props.index}
         onEdit={props.onEdit}
@@ -306,4 +312,21 @@ export namespace AutomationCard {
       />
     )
   }
+
+  // variables
+
+  export const SetVariable = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & SetVariableStepData['data']) => <AutomationCardBase
+    icon={<StepTypes.setVariable.icon />}
+    currentStepId={props.currentStepId}
+    title={StepTypes.setVariable.title}
+    position={props.position}
+    index={props.index}
+    onEdit={props.onEdit}
+    onRemove={props.onRemove}
+    label={
+      <Text size='sm'>
+        armazenar <i>&quot;{ensureCharactersLimit(props.value, MAX_CHAR_LIMITS.QUOTE)}&quot;</i> na variável <Badge>{ensureCharactersLimit(props.saveAs, MAX_CHAR_LIMITS.BADGE)}</Badge>
+      </Text>
+    }
+  />
 }

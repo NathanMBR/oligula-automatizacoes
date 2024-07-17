@@ -34,6 +34,8 @@ const validateSteps = (steps: unknown): boolean => {
 
     const stepType = step.type as keyof typeof StepTypes
 
+    // actions
+
     if (stepType === 'move') {
       if (!('x' in step.data))
         return false
@@ -124,6 +126,8 @@ const validateSteps = (steps: unknown): boolean => {
       if (step.data.time < 0)
         return false
     }
+
+    // statements
 
     else if (stepType === 'cycle') {
       if (!('iterable' in step.data))
@@ -227,6 +231,22 @@ const validateSteps = (steps: unknown): boolean => {
         return false
 
       if (!validateSteps(step.data.steps))
+        return false
+    }
+
+    // variables
+
+    else if (stepType === 'setVariable') {
+      if (!('saveAs' in step.data))
+        return false
+
+      if (typeof step.data.saveAs !== 'string')
+        return false
+
+      if (!('value' in step.data))
+        return false
+
+      if (typeof step.data.value !== 'string')
         return false
     }
 
