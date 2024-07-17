@@ -24,7 +24,6 @@ import type {
   MoveStepData,
   ClickStepData,
   WriteStepData,
-  ReadFileStepData,
   ParseStringStepData,
   SleepStepData,
   CycleStepData,
@@ -206,21 +205,6 @@ export namespace AutomationCard {
             ? <i>&quot;{ensureCharactersLimit(props.text, 100)}&quot;</i>
             : <>o conteúdo armazenado em <Badge color='orange'>{ensureCharactersLimit(props.readFrom, MAX_CHAR_LIMITS.BADGE)}</Badge></>
         }</Text>
-      </Group>
-    }
-  />
-
-  export const ReadFile = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & ReadFileStepData['data']) => <AutomationCardBase
-    icon={<StepTypes.readFile.icon />}
-    title={StepTypes.readFile.title}
-    position={props.position}
-    currentStepId={props.currentStepId}
-    index={props.index}
-    onEdit={props.onEdit}
-    onRemove={props.onRemove}
-    label={
-      <Group gap={4}>
-        <Text size='sm'>do arquivo <i>&quot;{ensureCharactersLimit(props.filename, MAX_CHAR_LIMITS.QUOTE)}&quot;</i>, e armazenar como</Text> <Badge>{ensureCharactersLimit(props.saveAs, MAX_CHAR_LIMITS.BADGE)}</Badge>
       </Group>
     }
   />

@@ -7,7 +7,6 @@ export type StepData =
   MoveStepData |
   ClickStepData |
   WriteStepData |
-  ReadFileStepData |
   ParseStringStepData |
   SleepStepData |
   CycleStepData |
@@ -35,14 +34,6 @@ export type WriteStepData = StepDefaultData & {
   data: {
     text: string
     readFrom: string
-  }
-}
-
-export type ReadFileStepData = StepDefaultData & {
-  type: 'readFile'
-  data: {
-    filename: string
-    saveAs: string
   }
 }
 

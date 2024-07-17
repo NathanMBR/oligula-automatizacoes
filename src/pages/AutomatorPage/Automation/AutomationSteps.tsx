@@ -93,18 +93,6 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                       onRemove={onRemove}
                     />
 
-                  if (type === 'readFile')
-                    return <AutomationCard.ReadFile
-                      key={id}
-                      position={position}
-                      currentStepId={step.id}
-                      index={index}
-                      filename={step.data.filename}
-                      saveAs={step.data.saveAs}
-                      onEdit={onEdit}
-                      onRemove={onRemove}
-                    />
-
                   if (type === 'parseString')
                     return <AutomationCard.ParseString
                       key={id}

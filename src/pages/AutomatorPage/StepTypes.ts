@@ -3,7 +3,6 @@ import {
   IconMouse2,
   IconPointer,
   IconPencil,
-  IconFileText,
   IconScissors,
   IconHourglass,
   IconRotateClockwise,
@@ -32,11 +31,6 @@ export const StepTypes = {
   write: {
     title:'Inserir dado',
     icon: IconPencil
-  },
-
-  readFile: {
-    title: 'Ler dados de um arquivo',
-    icon: IconFileText
   },
 
   parseString: {

@@ -33,7 +33,6 @@ export const TypeSelection = (props: TypeSelectionProps) => {
       'move',
       'click',
       'write',
-      'readFile',
       'parseString',
       'sleep'
     ],

@@ -85,20 +85,6 @@ const validateSteps = (steps: unknown): boolean => {
         return false
     }
 
-    else if (stepType === 'readFile') {
-      if (!('filename' in step.data))
-        return false
-
-      if (typeof step.data.filename !== 'string')
-        return false
-
-      if (!('saveAs' in step.data))
-        return false
-
-      if (typeof step.data.saveAs !== 'string')
-        return false
-    }
-
     else if (stepType === 'parseString') {
       if (!('parseString' in step.data))
         return false

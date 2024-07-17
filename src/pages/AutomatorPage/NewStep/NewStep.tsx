@@ -16,7 +16,6 @@ import {
   MoveStep,
   ClickStep,
   WriteStep,
-  ReadFileStep,
   ParseStringStep,
   SleepStep,
 
@@ -96,15 +95,6 @@ export const NewStep = () => {
           {
             stepType === 'write'
               ? <WriteStep
-                onClose={handleClose}
-                editingStep={editingStep}
-              />
-              : null
-          }
-
-          {
-            stepType === 'readFile'
-              ? <ReadFileStep
                 onClose={handleClose}
                 editingStep={editingStep}
               />

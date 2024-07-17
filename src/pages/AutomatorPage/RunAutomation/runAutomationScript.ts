@@ -64,11 +64,6 @@ export const runAutomationScript = async (data: RunAutomationData) => {
       continue
     }
 
-    if (step.type === 'readFile') {
-      console.log('Running step "readFile"')
-      continue
-    }
-
     if (step.type === 'parseString') {
       const {
         parseString,
