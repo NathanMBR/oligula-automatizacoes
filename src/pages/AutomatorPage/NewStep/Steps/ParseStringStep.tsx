@@ -16,7 +16,10 @@ import type {
 } from '../../../../types'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
-import { ClearableTextInput } from '../../../../components'
+import {
+  ClearableTextInput,
+  ClearableTextArea
+} from '../../../../components'
 import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
@@ -110,11 +113,13 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
       <Stack justify='space-between'>
         <Fieldset legend='Texto a dividir'>
           <Stack>
-            <ClearableTextInput
+            <ClearableTextArea
               label='Inserir texto manualmente'
               placeholder='Insira o texto a ser dividido'
+              rows={6}
               value={parseText}
               onChange={text => setParseText(text)}
+              withFileButton
             />
 
             <Divider label='ou' />
@@ -132,9 +137,10 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
           </Stack>
         </Fieldset>
 
-        <ClearableTextInput
+        <ClearableTextArea
           label='Texto separador'
           placeholder='Insira o texto separador'
+          rows={2}
           value={separatorText}
           onChange={text => setSeparatorText(text)}
         />

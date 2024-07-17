@@ -14,7 +14,7 @@ import type {
 } from '../../../../types'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
-import { ClearableTextInput } from '../../../../components'
+import { ClearableTextArea } from '../../../../components'
 import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
@@ -75,11 +75,12 @@ export const WriteStep = (props: WriteStepProps) => {
   return (
     <>
       <Stack justify='space-between'>
-        <ClearableTextInput
+        <ClearableTextArea
           label='Inserir dado manual'
           placeholder='Digite o dado a ser inserido'
           value={writeText}
           onChange={text => setWriteText(text)}
+          withFileButton
         />
 
         <Divider label='ou' />
