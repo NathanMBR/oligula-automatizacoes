@@ -88,7 +88,7 @@ export const ClearableTextArea = (props: ClearableTextAreaProps) => {
                     {
                       isReadingFile
                         ? <Loader size={16} />
-                        : <IconFileText size={20} />
+                        : <IconFileText size={20} stroke={1.5} />
                     }
                   </Button>
                 </Tooltip>
