@@ -6,8 +6,8 @@ Desktop automation app made with React, TypeScript, Tauri & Rust
 
 ### Requirements
 
-- Rust 1.78 or higher
 - [Tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites)
+- Rust 1.78 or higher
 - pnpm 9 or higher
 - Node.js 20 or higher
 
