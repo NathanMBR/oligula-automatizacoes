@@ -50,8 +50,8 @@ export const ConditionalStep = (props: ConditionalStepProps) => {
     listVariables
   } = useContext(AutomationContext)
 
-  const parentId = useParentId()
   const variables = listVariables()
+  const parentId = useParentId()
 
   const initialState = {
     leftSide: {

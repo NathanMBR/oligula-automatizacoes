@@ -33,7 +33,7 @@ export type AutomationData = {
   getVariable: (name: string) => Variables[string] | undefined
   setVariable: (name: string, value: Variables[string]) => void
   hasVariable: (name: string) => boolean
-  listVariables: () => Array<string>
+  listVariables: (filter?: Partial<Variables[string]>) => Array<string>
   deleteVariable: (name: string) => void
   deleteVariablesByStepId: (id: number) => void
   setVariables: (newVariables: Variables) => void
@@ -340,7 +340,17 @@ export const AutomationProvider = (props: AutomationProviderProps) => {
 
   const hasVariable: AutomationData['hasVariable'] = name => name.toLowerCase() in variables
 
-  const listVariables: AutomationData['listVariables'] = () => Object.keys(variables)
+  const listVariables: AutomationData['listVariables'] = filter => {
+    if (!filter || Object.keys(filter).length <= 0)
+      return Object.keys(variables)
+
+    type VariableDataKey = keyof Variables[string]
+    return Object.entries(variables)
+      .filter(([_variableName, variableValue]) => Object.keys(filter)
+        .every(filterKey => filter[filterKey as VariableDataKey] === variableValue[filterKey as VariableDataKey])
+      )
+      .map(([variableName]) => variableName)
+  }
 
   const deleteVariable: AutomationData['deleteVariable'] = name => setVariables(currentVariables => {
     const newVariables = { ...currentVariables }

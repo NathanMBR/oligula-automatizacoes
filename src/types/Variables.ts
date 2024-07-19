@@ -1,5 +1,6 @@
 type VariableData = {
   ownerId: number
+  type: 'value' | 'list'
   value: unknown
 }
 

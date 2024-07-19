@@ -92,6 +92,7 @@ export const runAutomationScript = async (data: RunAutomationData) => {
       const parsedText = textToParse.split(divider)
       setVariable(saveAs, {
         ownerId: step.id,
+        type: 'list',
         value: parsedText
       })
 
@@ -120,8 +121,9 @@ export const runAutomationScript = async (data: RunAutomationData) => {
       console.log(`Running step "cycle" with iterable "${step.data.iterable}"`)
 
       for (const item of iterable.value) {
-        const newVariable = {
+        const newVariable: Variables[string] = {
           ownerId: step.id,
+          type: 'value',
           value: item
         }
 

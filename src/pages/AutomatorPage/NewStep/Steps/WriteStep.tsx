@@ -37,12 +37,11 @@ export const WriteStep = (props: WriteStepProps) => {
     listVariables
   } = useContext(AutomationContext)
 
-  const variables = listVariables()
+  const variables = listVariables({ type: 'value' })
+  const parentId = useParentId()
 
   const [writeText, setWriteText] = useState(editingStep?.type === 'write' ? editingStep.data.text : '')
   const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'write' ? editingStep.data.readFrom : variables[0] || '')
-
-  const parentId = useParentId()
 
   const noVariablesError = variables.length <= 0
     ? 'Desativado (não há variáveis disponíveis)'

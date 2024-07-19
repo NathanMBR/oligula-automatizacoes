@@ -39,9 +39,8 @@ export const CycleStep = (props: CycleStepProps) => {
     setVariable
   } = useContext(AutomationContext)
 
+  const variables = listVariables({ type: 'list' })
   const parentId = useParentId()
-
-  const variables = listVariables()
 
   const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'cycle' ? editingStep.data.iterable : variables[0] || '')
   const [saveItemsAs, setSaveItemsAs] = useState(editingStep?.type === 'cycle' ? editingStep.data.saveItemsAs : '')
@@ -91,6 +90,7 @@ export const CycleStep = (props: CycleStepProps) => {
 
     setVariable(saveItemsAs, {
       ownerId: id,
+      type: 'value',
       value: null
     })
 

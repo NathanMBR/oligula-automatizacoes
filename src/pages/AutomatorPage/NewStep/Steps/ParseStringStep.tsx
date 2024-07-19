@@ -44,15 +44,14 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
     setVariable
   } = useContext(AutomationContext)
 
-  const variables = listVariables()
+  const variables = listVariables({ type: 'value' })
+  const parentId = useParentId()
 
   const [parseText, setParseText] = useState(editingStep?.type === 'parseString' ? editingStep.data.parseString : '')
   const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'parseString' ? editingStep.data.readFrom : variables[0] || '')
   const [separatorText, setSeparatorText] = useState(editingStep?.type === 'parseString' ? editingStep.data.divider : '')
   const [saveAs, setSaveAs] = useState(editingStep?.type === 'parseString' ? editingStep.data.saveAs : '')
   const [variableError, setVariableError] = useState('')
-
-  const parentId = useParentId()
 
   const allowFinish =
     (parseText !== '' || selectedVariable !== '') &&
@@ -102,6 +101,7 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
 
     setVariable(saveAs, {
       ownerId: id,
+      type: 'list',
       value: null
     })
 

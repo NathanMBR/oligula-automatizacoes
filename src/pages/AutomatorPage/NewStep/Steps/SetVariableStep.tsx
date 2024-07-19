@@ -79,6 +79,7 @@ export const SetVariableStep = (props: SetVariableStepProps) => {
 
     setVariable(saveAs, {
       ownerId: id,
+      type: 'value',
       value
     })
 
