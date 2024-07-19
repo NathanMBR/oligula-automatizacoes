@@ -25,10 +25,13 @@ import type {
   ConditionalStepData,
   StepData
 } from '../../../../types'
+import {
+  ClearableTextInput,
+  VariableSelect
+} from '../../../../components'
 import { AutomationContext } from '../../../../providers'
 import { useParentId } from '../../../../hooks'
 import { generateRandomID } from '../../../../helpers'
-import { ClearableTextInput } from '../../../../components'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
@@ -47,10 +50,10 @@ export const ConditionalStep = (props: ConditionalStepProps) => {
     addStep,
     editStep,
 
-    listVariables
+    listVariablesWithData
   } = useContext(AutomationContext)
 
-  const variables = listVariables()
+  const variables = listVariablesWithData()
   const parentId = useParentId()
 
   const initialState = {
@@ -61,7 +64,7 @@ export const ConditionalStep = (props: ConditionalStepProps) => {
 
       variable: editingStep?.type === 'conditional' && editingStep.data.condition.leftSide.origin === 'variable'
         ? editingStep.data.condition.leftSide.readFrom
-        : variables[0] || ''
+        : variables[0]?.[0] || ''
     },
 
     operator: (editingStep?.type === 'conditional'
@@ -75,7 +78,7 @@ export const ConditionalStep = (props: ConditionalStepProps) => {
 
       variable: editingStep?.type === 'conditional' && editingStep.data.condition.rightSide.origin === 'variable'
         ? editingStep.data.condition.rightSide.readFrom
-        : variables[0] || ''
+        : variables[0]?.[0] || ''
     }
   }
 
@@ -87,30 +90,6 @@ export const ConditionalStep = (props: ConditionalStepProps) => {
 
   const [leftSideValueNumberError, setLeftSideValueNumberError] = useState('')
   const [rightSideValueNumberError, setRightSideValueNumberError] = useState('')
-
-  const noVariablesError = variables.length <= 0
-    ? 'Desativado (não há variáveis disponíveis)'
-    : null
-
-  const manualInputErrorMessage = 'Desativado (dado manual inserido; remova-o para ativar)'
-
-  const leftSideManualInputError = conditionLeftSideValue.length > 0
-    ? manualInputErrorMessage
-    : null
-
-  const rightSideManualInputError = conditionRightSideValue.length > 0
-    ? manualInputErrorMessage
-    : null
-
-  const leftSideSelectError =
-    noVariablesError ||
-    leftSideManualInputError ||
-    ''
-
-  const rightSideSelectError =
-    noVariablesError ||
-    rightSideManualInputError ||
-    ''
 
   const allowFinish =
     (!!conditionLeftSideValue || !!conditionLeftSideSelectedVariable) &&
@@ -267,15 +246,11 @@ export const ConditionalStep = (props: ConditionalStepProps) => {
 
             <Divider label='ou' />
 
-            <Select
+            <VariableSelect
               label='Inserir valor de uma variável'
-              checkIconPosition='right'
-              allowDeselect={false}
-              data={variables}
-              error={leftSideSelectError}
+              variables={variables}
               value={conditionLeftSideSelectedVariable}
-              disabled={leftSideSelectError !== ''}
-              onChange={value => setConditionLeftSideSelectedVariable(String(value))}
+              onChange={value => setConditionLeftSideSelectedVariable(value)}
             />
           </Stack>
         </Fieldset>
@@ -316,15 +291,11 @@ export const ConditionalStep = (props: ConditionalStepProps) => {
 
             <Divider label='ou' />
 
-            <Select
+            <VariableSelect
               label='Inserir valor de uma variável'
-              checkIconPosition='right'
-              allowDeselect={false}
-              data={variables}
-              error={rightSideSelectError}
+              variables={variables}
               value={conditionRightSideSelectedVariable}
-              disabled={rightSideSelectError !== ''}
-              onChange={value => setConditionRightSideSelectedVariable(String(value))}
+              onChange={value => setConditionRightSideSelectedVariable(value)}
             />
           </Stack>
         </Fieldset>

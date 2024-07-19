@@ -1,6 +1,5 @@
 import {
   Divider,
-  Select,
   Stack
 } from '@mantine/core'
 import {
@@ -12,9 +11,12 @@ import type {
   StepData,
   WriteStepData
 } from '../../../../types'
+import {
+  ClearableTextArea,
+  VariableSelect
+} from '../../../../components'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
-import { ClearableTextArea } from '../../../../components'
 import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
@@ -34,24 +36,14 @@ export const WriteStep = (props: WriteStepProps) => {
     addStep,
     editStep,
 
-    listVariables
+    listVariablesWithData
   } = useContext(AutomationContext)
 
-  const variables = listVariables({ type: 'value' })
+  const variables = listVariablesWithData({ type: 'value' })
   const parentId = useParentId()
 
   const [writeText, setWriteText] = useState(editingStep?.type === 'write' ? editingStep.data.text : '')
-  const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'write' ? editingStep.data.readFrom : variables[0] || '')
-
-  const noVariablesError = variables.length <= 0
-    ? 'Desativado (não há variáveis disponíveis)'
-    : null
-
-  const manualInputError = writeText.length > 0
-    ? 'Desativado (dado manual inserido; remova-o para ativar)'
-    : null
-
-  const selectError = noVariablesError || manualInputError || ''
+  const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'write' ? editingStep.data.readFrom : variables[0]?.[0] || '')
 
   const addWriteStep = () => {
     const writeStepPayload: WriteStepData = {
@@ -84,15 +76,11 @@ export const WriteStep = (props: WriteStepProps) => {
 
         <Divider label='ou' />
 
-        <Select
+        <VariableSelect
           label='Escrever texto armazenado em uma variável'
-          checkIconPosition='right'
-          data={variables}
-          error={selectError}
-          allowDeselect={false}
+          variables={variables}
           value={selectedVariable}
-          disabled={selectError !== ''}
-          onChange={value => setSelectedVariable(String(value))}
+          onChange={value => setSelectedVariable(value)}
         />
       </Stack>
 

@@ -1,20 +1,20 @@
 import {
-  Select,
-  Stack
-} from '@mantine/core'
-import {
   useContext,
   useState
 } from 'react'
+import { Stack } from '@mantine/core'
 import { IconVariable } from '@tabler/icons-react'
 
 import type {
   CycleStepData,
   StepData
 } from '../../../../types'
+import {
+  ClearableTextInput,
+  VariableSelect
+} from '../../../../components'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
-import { ClearableTextInput } from '../../../../components'
 import { useParentId } from '../../../../hooks'
 
 import { StepFinishFooter } from '../StepFinishFooter'
@@ -34,23 +34,17 @@ export const CycleStep = (props: CycleStepProps) => {
     addStep,
     editStep,
 
-    listVariables,
+    listVariablesWithData,
     getVariable,
     setVariable
   } = useContext(AutomationContext)
 
-  const variables = listVariables({ type: 'list' })
+  const variables = listVariablesWithData({ type: 'list' })
   const parentId = useParentId()
 
-  const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'cycle' ? editingStep.data.iterable : variables[0] || '')
+  const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'cycle' ? editingStep.data.iterable : variables[0]?.[0] || '')
   const [saveItemsAs, setSaveItemsAs] = useState(editingStep?.type === 'cycle' ? editingStep.data.saveItemsAs : '')
   const [variableError, setVariableError] = useState('')
-
-  const noVariablesError = variables.length <= 0
-    ? 'Desativado (não há variáveis disponíveis)'
-    : null
-
-  const selectError = noVariablesError || ''
 
   const allowFinish =
     selectedVariable !== '' &&
@@ -100,15 +94,11 @@ export const CycleStep = (props: CycleStepProps) => {
   return (
     <>
       <Stack justify='space-between'>
-        <Select
+        <VariableSelect
           label='Selecionar variável do tipo lista'
-          checkIconPosition='right'
-          data={variables}
-          error={selectError}
-          allowDeselect={false}
+          variables={variables}
           value={selectedVariable}
-          disabled={selectError !== ''}
-          onChange={value => setSelectedVariable(String(value))}
+          onChange={value => setSelectedVariable(value)}
         />
 
         <ClearableTextInput

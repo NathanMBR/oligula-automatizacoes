@@ -1,7 +1,6 @@
 import {
   Divider,
   Fieldset,
-  Select,
   Stack
 } from '@mantine/core'
 import {
@@ -16,7 +15,8 @@ import type {
 } from '../../../../types'
 import {
   ClearableTextInput,
-  ClearableTextArea
+  ClearableTextArea,
+  VariableSelect
 } from '../../../../components'
 import { AutomationContext } from '../../../../providers'
 import { generateRandomID } from '../../../../helpers'
@@ -39,16 +39,16 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
     addStep,
     editStep,
 
-    listVariables,
+    listVariablesWithData,
     getVariable,
     setVariable
   } = useContext(AutomationContext)
 
-  const variables = listVariables({ type: 'value' })
+  const variables = listVariablesWithData({ type: 'value' })
   const parentId = useParentId()
 
   const [parseText, setParseText] = useState(editingStep?.type === 'parseString' ? editingStep.data.parseString : '')
-  const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'parseString' ? editingStep.data.readFrom : variables[0] || '')
+  const [selectedVariable, setSelectedVariable] = useState(editingStep?.type === 'parseString' ? editingStep.data.readFrom : variables[0]?.[0] || '')
   const [separatorText, setSeparatorText] = useState(editingStep?.type === 'parseString' ? editingStep.data.divider : '')
   const [saveAs, setSaveAs] = useState(editingStep?.type === 'parseString' ? editingStep.data.saveAs : '')
   const [variableError, setVariableError] = useState('')
@@ -58,16 +58,6 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
     separatorText !== '' &&
     saveAs !== '' &&
     variableError === ''
-
-  const noVariablesError = variables.length <= 0
-    ? 'Desativado (não há variáveis disponíveis)'
-    : null
-
-  const manualInputError = parseText.length > 0
-    ? 'Desativado (dado manual inserido; remova-o para ativar)'
-    : null
-
-  const selectError = noVariablesError || manualInputError || ''
 
   const addParseStringStep = () => {
     const saveAsVariable = getVariable(saveAs)
@@ -124,15 +114,11 @@ export const ParseStringStep = (props: ParseStringStepProps) => {
 
             <Divider label='ou' />
 
-            <Select
+            <VariableSelect
               label='Inserir texto de uma variável'
-              checkIconPosition='right'
-              data={variables}
-              error={selectError}
-              allowDeselect={false}
+              variables={variables}
               value={selectedVariable}
-              disabled={selectError !== ''}
-              onChange={value => setSelectedVariable(String(value))}
+              onChange={value => setSelectedVariable(value)}
             />
           </Stack>
         </Fieldset>
