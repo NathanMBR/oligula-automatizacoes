@@ -17,14 +17,15 @@ Priority items are marked with an asterisk (\*).
 
 ### Steps
 
-- Add types to variables (list and non-list)\*
 - Add destruct list variable step\*
 - Add keyboard combination press step (for example, `Ctrl + Shift + K`)\*
+- Write text: fix not writing latin characters (check `enigo` crate)
+- Add variable: add support to list variables
 - Add while step
+- Add join string step
 - Add error modal for running steps
 - Add minimize app step
 - Check UI responsiveness
-- Write text: fix not writing latin characters (check `enigo` crate)
 - Merge `AutomationCard` options in a menu
 - Move mouse: Add "smooth movement" option
 - Add notification when automation finishes run
@@ -36,6 +37,7 @@ Priority items are marked with an asterisk (\*).
 
 - Add option to disable notification when automation finishes or fails
 - Move mouse: add "capture delay" setting (default to 5s)
+- Minimum delay between steps should be 0.1s
 
 ## Spreadsheet Formatter
 
