@@ -11,6 +11,8 @@ import {
   IconEdit,
   IconMaximize,
   IconMaximizeOff,
+  IconSquareAsterisk,
+  IconSquareNumber1,
   IconTrash
 } from '@tabler/icons-react'
 import type {
@@ -35,7 +37,8 @@ import type {
   ConditionalStepConditionOperator,
 
   // variables
-  SetVariableStepData
+  SetVariableStepData,
+  DestructVariableStepData
 } from '../../../../types'
 import { ensureCharactersLimit } from '../../../../helpers'
 
@@ -155,6 +158,14 @@ export namespace AutomationCard {
 
   const ONE_SECOND_IN_MS = 1000
 
+  const badgeIconProps = {
+    size: 16,
+    stroke: 1.5
+  }
+
+  const valueVariableIcon = <IconSquareNumber1 {...badgeIconProps} />
+  const listVariableIcon = <IconSquareAsterisk {...badgeIconProps} />
+
   // actions
 
   export const Move = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & MoveStepData['data']) => <AutomationCardBase
@@ -209,7 +220,7 @@ export namespace AutomationCard {
         <Text size='sm' style={{ overflow: 'hidden' }}>Escrever {
           props.text.length > 0
             ? <i>&quot;{ensureCharactersLimit(props.text, 100)}&quot;</i>
-            : <>o conteúdo armazenado em <Badge color='orange'>{ensureCharactersLimit(props.readFrom, MAX_CHAR_LIMITS.BADGE)}</Badge></>
+            : <>o conteúdo armazenado em <Badge color='orange' leftSection={valueVariableIcon}>{ensureCharactersLimit(props.readFrom, MAX_CHAR_LIMITS.BADGE)}</Badge></>
         }</Text>
       </Group>
     }
@@ -229,11 +240,11 @@ export namespace AutomationCard {
           {
             props.parseString.length > 0
               ? <>Dividir <i>&quot;{ensureCharactersLimit(props.parseString, MAX_CHAR_LIMITS.QUOTE)}&quot;</i></>
-              : <>armazenado em <Badge color='orange'>{props.readFrom}</Badge></>
+              : <>armazenado em <Badge color='orange' leftSection={valueVariableIcon}>{props.readFrom}</Badge></>
           }
         </Text>
 
-        <Text size='sm'>por <i>&quot;{ensureCharactersLimit(props.divider, MAX_CHAR_LIMITS.BADGE)}&quot;</i>, e salvar em <Badge>{ensureCharactersLimit(props.saveAs, MAX_CHAR_LIMITS.BADGE)}</Badge></Text>
+        <Text size='sm'>por <i>&quot;{ensureCharactersLimit(props.divider, MAX_CHAR_LIMITS.BADGE)}&quot;</i>, e salvar em <Badge leftSection={listVariableIcon}>{ensureCharactersLimit(props.saveAs, MAX_CHAR_LIMITS.BADGE)}</Badge></Text>
       </Group>
     }
   />
@@ -262,8 +273,8 @@ export namespace AutomationCard {
     onRemove={props.onRemove}
     label={
       <Text size='sm'>
-        armazenados na variável <Badge color='orange'>{ensureCharactersLimit(props.iterable, MAX_CHAR_LIMITS.BADGE)}</Badge>,
-        e atribuir cada um à variável <Badge color='pink'>{ensureCharactersLimit(props.saveItemsAs, MAX_CHAR_LIMITS.BADGE)}</Badge>
+        armazenados na variável <Badge color='orange' leftSection={listVariableIcon}>{ensureCharactersLimit(props.iterable, MAX_CHAR_LIMITS.BADGE)}</Badge>,
+        e atribuir cada um à variável <Badge color='pink' leftSection={valueVariableIcon}>{ensureCharactersLimit(props.saveItemsAs, MAX_CHAR_LIMITS.BADGE)}</Badge>
       </Text>
     }
   />
@@ -283,7 +294,7 @@ export namespace AutomationCard {
         o valor <i>&quot;{ensureCharactersLimit(props.condition.leftSide.value, MAX_CHAR_LIMITS.QUOTE)}&quot;</i>
       </>
       : <>
-        o valor da variável <Badge color='orange'>{ensureCharactersLimit(props.condition.leftSide.readFrom, MAX_CHAR_LIMITS.BADGE)}</Badge>
+        o valor da variável <Badge color='orange' leftSection={valueVariableIcon}>{ensureCharactersLimit(props.condition.leftSide.readFrom, MAX_CHAR_LIMITS.BADGE)}</Badge>
       </>
 
     const conditionRightSide = props.condition.rightSide.origin === 'value'
@@ -291,7 +302,7 @@ export namespace AutomationCard {
         o valor <i>&quot;{ensureCharactersLimit(props.condition.rightSide.value, MAX_CHAR_LIMITS.QUOTE)}&quot;</i>
       </>
       : <>
-        o valor da variável <Badge color='orange'>{ensureCharactersLimit(props.condition.rightSide.readFrom, MAX_CHAR_LIMITS.BADGE)}</Badge>
+        o valor da variável <Badge color='orange' leftSection={valueVariableIcon}>{ensureCharactersLimit(props.condition.rightSide.readFrom, MAX_CHAR_LIMITS.BADGE)}</Badge>
       </>
 
     return (
@@ -325,7 +336,22 @@ export namespace AutomationCard {
     onRemove={props.onRemove}
     label={
       <Text size='sm'>
-        armazenar <i>&quot;{ensureCharactersLimit(props.value, MAX_CHAR_LIMITS.QUOTE)}&quot;</i> na variável <Badge>{ensureCharactersLimit(props.saveAs, MAX_CHAR_LIMITS.BADGE)}</Badge>
+        armazenar <i>&quot;{ensureCharactersLimit(props.value, MAX_CHAR_LIMITS.QUOTE)}&quot;</i> na variável <Badge leftSection={valueVariableIcon}>{ensureCharactersLimit(props.saveAs, MAX_CHAR_LIMITS.BADGE)}</Badge>
+      </Text>
+    }
+  />
+
+  export const DestructVariable = (props: Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'> & DestructVariableStepData['data']) => <AutomationCardBase
+    icon={<StepTypes.destructVariable.icon />}
+    currentStepId={props.currentStepId}
+    title={StepTypes.destructVariable.title}
+    position={props.position}
+    index={props.index}
+    onEdit={props.onEdit}
+    onRemove={props.onRemove}
+    label={
+      <Text size='sm'>
+        Ler o valor da posição <i>{props.index}</i> da variável <Badge color='orange' leftSection={listVariableIcon}>{ensureCharactersLimit(props.readFrom, MAX_CHAR_LIMITS.BADGE)}</Badge>, e armazenar em <Badge leftSection={valueVariableIcon}>{ensureCharactersLimit(props.saveAs, MAX_CHAR_LIMITS.BADGE)}</Badge>
       </Text>
     }
   />

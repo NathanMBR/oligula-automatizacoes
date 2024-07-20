@@ -9,9 +9,10 @@ export type StepData =
   WriteStepData |
   ParseStringStepData |
   SleepStepData |
-  SetVariableStepData |
   CycleStepData |
-  ConditionalStepData
+  ConditionalStepData |
+  SetVariableStepData |
+  DestructVariableStepData
 
 // actions
 
@@ -102,6 +103,15 @@ export type SetVariableStepData = StepDefaultData & {
   type: 'setVariable'
   data: {
     value: string
+    saveAs: string
+  }
+}
+
+export type DestructVariableStepData = StepDefaultData & {
+  type: 'destructVariable'
+  data: {
+    readFrom: string
+    index: number
     saveAs: string
   }
 }

@@ -24,7 +24,8 @@ import {
   ConditionalStep,
 
   // variables
-  SetVariableStep
+  SetVariableStep,
+  DestructVariableStep
 } from './Steps'
 import { TypeSelection } from './TypeSelection'
 
@@ -55,15 +56,13 @@ export const NewStep = () => {
       setStepType(editingStep.type)
   }, [editingStep])
 
-  const modalTitle = editingStep ? 'Editar passo' : 'Novo passo'
-
   return (
     <Modal
       size='lg'
-      title={modalTitle}
       opened={isAddingStep}
       onClose={handleClose}
       overlayProps={{ blur: 2.5 }}
+      title={editingStep ? 'Editar passo' : 'Novo passo'}
       centered
     >
       <Stepper active={stageIndex}>
@@ -147,6 +146,15 @@ export const NewStep = () => {
           {
             stepType === 'setVariable'
               ? <SetVariableStep
+                onClose={handleClose}
+                editingStep={editingStep}
+              />
+              : null
+          }
+
+          {
+            stepType === 'destructVariable'
+              ? <DestructVariableStep
                 onClose={handleClose}
                 editingStep={editingStep}
               />

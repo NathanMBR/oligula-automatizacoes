@@ -43,7 +43,8 @@ export const TypeSelection = (props: TypeSelectionProps) => {
     ],
 
     variables: [
-      'setVariable'
+      'setVariable',
+      'destructVariable'
     ]
   } satisfies Record<string, Array<StepData['type']>>
 

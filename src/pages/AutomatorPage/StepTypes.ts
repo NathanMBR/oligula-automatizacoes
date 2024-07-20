@@ -7,6 +7,7 @@ import {
   IconHourglass,
   IconRotateClockwise,
   IconArrowRampRight2,
+  IconVariablePlus,
   IconVariable
 } from '@tabler/icons-react'
 
@@ -58,6 +59,11 @@ export const StepTypes = {
   // variables
   setVariable: {
     title: 'Definir variável',
+    icon: IconVariablePlus
+  },
+
+  destructVariable: {
+    title: 'Obter valor específico de uma variável lista',
     icon: IconVariable
   }
 } as const satisfies StepTypesModel

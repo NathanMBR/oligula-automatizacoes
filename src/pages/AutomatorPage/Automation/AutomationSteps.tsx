@@ -158,6 +158,18 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                       onEdit={onEdit}
                       onRemove={onRemove}
                     />
+
+                  if (type === 'destructVariable')
+                    return <AutomationCard.DestructVariable
+                      key={id}
+                      position={position}
+                      readFrom={step.data.readFrom}
+                      index={step.data.index}
+                      saveAs={step.data.saveAs}
+                      currentStepId={step.id}
+                      onEdit={onEdit}
+                      onRemove={onRemove}
+                    />
                 })
               }
 

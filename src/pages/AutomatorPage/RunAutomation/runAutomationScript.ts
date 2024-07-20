@@ -189,6 +189,43 @@ export const runAutomationScript = async (data: RunAutomationData) => {
         steps: step.data.steps,
         variables
       })
+
+      continue
+    }
+
+    // variables
+
+    if (step.type === 'setVariable') {
+      console.log(`Running step "setVariable" with variable name "${step.data.saveAs}" and value "${step.data.value}"`)
+
+      setVariable(step.data.saveAs, {
+        ownerId: step.id,
+        type: 'value',
+        value: step.data.value
+      })
+
+      continue
+    }
+
+    if (step.type === 'destructVariable') {
+      console.log(`Running step "destructVariable" with list variable "${step.data.readFrom}", index "${step.data.index}" and value variable "${step.data.saveAs}"`)
+
+      const variable = getVariable(step.data.readFrom)
+      if (!variable)
+        return console.error(`Unexpected Error: Variable "${step.data.readFrom}" not found`)
+
+      if (variable.type !== 'list' || !Array.isArray(variable.value))
+        return console.error(`Unexpected Error: Variable "${step.data.readFrom}" isn't a list (got ${typeof variable.value})`)
+
+      const destructuredValue = variable.value[step.data.index]
+
+      setVariable(step.data.saveAs, {
+        ownerId: step.id,
+        type: 'value',
+        value: destructuredValue
+      })
+
+      continue
     }
   }
 }

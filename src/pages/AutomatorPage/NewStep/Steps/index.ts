@@ -11,3 +11,4 @@ export * from './ConditionalStep'
 
 // variables
 export * from './SetVariableStep'
+export * from './DestructVariableStep'

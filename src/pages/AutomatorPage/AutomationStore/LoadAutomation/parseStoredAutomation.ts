@@ -13,6 +13,15 @@ const validateSteps = (steps: unknown): boolean => {
     )
       return false
 
+    if (!('id' in step))
+      return false
+
+    if (typeof step.id !== 'number')
+      return false
+
+    if (step.id < 0)
+      return false
+
     if (!('type' in step))
       return false
 
@@ -43,7 +52,10 @@ const validateSteps = (steps: unknown): boolean => {
       if (typeof step.data.x !== 'number')
         return false
 
-      if (Number.isNaN(step.data.x))
+      if (!Number.isSafeInteger(step.data.x))
+        return false
+
+      if (step.data.x < 0)
         return false
 
       if (!('y' in step.data))
@@ -52,7 +64,10 @@ const validateSteps = (steps: unknown): boolean => {
       if (typeof step.data.y !== 'number')
         return false
 
-      if (Number.isNaN(step.data.y))
+      if (!Number.isSafeInteger(step.data.y))
+        return false
+
+      if (step.data.y < 0)
         return false
     }
 
@@ -120,7 +135,7 @@ const validateSteps = (steps: unknown): boolean => {
       if (typeof step.data.time !== 'number')
         return false
 
-      if (Number.isNaN(step.data.time))
+      if (!Number.isSafeInteger(step.data.time))
         return false
 
       if (step.data.time < 0)
@@ -250,6 +265,32 @@ const validateSteps = (steps: unknown): boolean => {
         return false
     }
 
+    else if (stepType === 'destructVariable') {
+      if (!('readFrom' in step.data))
+        return false
+
+      if (typeof step.data.readFrom !== 'string')
+        return false
+
+      if (!('index' in step.data))
+        return false
+
+      if (typeof step.data.index !== 'number')
+        return false
+
+      if (!Number.isSafeInteger(step.data.index))
+        return false
+
+      if (step.data.index < 0)
+        return false
+
+      if (!('saveAs' in step.data))
+        return false
+
+      if (typeof step.data.saveAs !== 'string')
+        return false
+    }
+
     else
       return false
   }
@@ -322,7 +363,7 @@ export const parseStoredAutomation = (rawStoredAutomation: string): StoredAutoma
       if (typeof variable.ownerId !== 'number')
         return null
 
-      if (Number.isNaN(variable.ownerId))
+      if (variable.ownerId < 0)
         return null
 
       if (!('value' in variable))
