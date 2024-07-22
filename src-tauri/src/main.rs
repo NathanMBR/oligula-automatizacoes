@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use autopilot::{self, geometry::Point, mouse::Button};
+use enigo::{Enigo, Keyboard, Settings};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct MousePosition {
@@ -53,7 +54,9 @@ fn click(button: MouseButton) {
 
 #[tauri::command(async)]
 fn write(text: String) {
-    autopilot::key::type_string(&text, &[], 0.0, 0.0)
+    let mut enigo = Enigo::new(&Settings::default()).unwrap();
+
+    enigo.text(&text).unwrap();
 }
 
 fn main() {
