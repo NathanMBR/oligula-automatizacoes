@@ -9,7 +9,7 @@ import {
   useState
 } from 'react'
 
-import { PreloadContext } from '../../providers'
+import { PreloadContext } from '../../../providers'
 
 export type AvailableBodyProps = {
   handleClose: () => void

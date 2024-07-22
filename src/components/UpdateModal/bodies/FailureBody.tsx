@@ -5,10 +5,10 @@ import {
   Group,
   Text
 } from '@mantine/core'
+import { IconInfoCircle } from '@tabler/icons-react'
 import { useContext } from 'react'
 
-import { PreloadContext } from '../../providers'
-import { IconInfoCircle } from '@tabler/icons-react'
+import { PreloadContext } from '../../../providers'
 
 export type FailureBodyProps = {
   handleClose: () => void

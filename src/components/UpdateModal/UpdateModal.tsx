@@ -11,10 +11,12 @@ import {
 
 import { PreloadContext } from '../../providers'
 
-import { AvailableBody } from './AvailableBody'
-import { UpdatingBody } from './UpdatingBody'
-import { SuccessBody } from './SuccessBody'
-import { FailureBody } from './FailureBody'
+import {
+  AvailableBody,
+  UpdatingBody,
+  SuccessBody,
+  FailureBody
+} from './bodies'
 
 export type UpdateModalProps = {
   isOpenExternally?: boolean
