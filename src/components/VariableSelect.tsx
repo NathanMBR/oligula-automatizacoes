@@ -9,8 +9,8 @@ import {
 } from '@mantine/core'
 import { useContext } from 'react'
 
-import { AutomationContext } from '../../providers'
-import type { Variables } from '../../types'
+import { AutomationContext } from '../providers'
+import type { Variables } from '../types'
 
 export type VariableSelectProps = {
   label: string
