@@ -1,15 +1,11 @@
 import {
-  Button,
   Divider,
   Group,
   NumberInput,
   Stack,
   Text
 } from '@mantine/core'
-import {
-  IconAlertCircle,
-  IconPlayerRecordFilled
-} from '@tabler/icons-react'
+import { IconAlertCircle } from '@tabler/icons-react'
 import {
   invoke,
   notification,
@@ -33,6 +29,7 @@ import {
 } from '../../../../helpers'
 import { AutomationContext } from '../../../../providers'
 import { useParentId } from '../../../../hooks'
+import { RecordButton } from '../../../../components'
 
 import { StepFinishFooter } from '../StepFinishFooter'
 
@@ -186,22 +183,12 @@ export const MoveStep = (props: MoveStepProps) => {
 
         <Divider label='ou' />
 
-        <Button
-          variant='default'
+        <RecordButton
+          isRecording={isCapturingMousePosition}
           onClick={handleMousePositionCapture}
-          disabled={isCapturingMousePosition}
         >
-          {
-            isCapturingMousePosition
-              ? <Group gap={4}>
-                <IconPlayerRecordFilled color='#f00' size={20} />
-                <span>Capturando...</span>
-              </Group>
-              : <>
-                Capturar posição do mouse
-              </>
-          }
-        </Button>
+          Capturar posição do mouse
+        </RecordButton>
 
         <Text size='xs' ta='center'>
           Ao iniciar a captura, o programa será minimizado. <br />
