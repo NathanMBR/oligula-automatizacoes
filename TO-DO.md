@@ -17,9 +17,8 @@ Priority items are marked with an asterisk (\*).
 
 ### Steps
 
-- Add destruct list variable step\*
 - Add keyboard combination press step (for example, `Ctrl + Shift + K`)\*
-- Write text: fix not writing latin characters (check `enigo` crate)
+- Migrate completely from crate `autopilot` to `enigo`
 - Add variable: add support to list variables
 - Add while step
 - Add join string step
