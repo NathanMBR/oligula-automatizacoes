@@ -22,7 +22,7 @@ pub struct KeyboardCombination {
     hold_ctrl: bool,
     hold_shift: bool,
     hold_alt: bool,
-    key: char,
+    key_code: u32,
 }
 
 #[tauri::command(async)]
@@ -84,7 +84,7 @@ fn press_key_combination(combination: KeyboardCombination) {
     }
 
     enigo
-        .key(Key::Unicode(combination.key), Direction::Click)
+        .key(Key::Other(combination.key_code), Direction::Click)
         .unwrap();
 
     if combination.hold_ctrl {
