@@ -23,6 +23,8 @@ pub struct KeyboardCombination {
     hold_shift: bool,
     hold_alt: bool,
     key_code: u32,
+    key_name: char,
+    use_unicode: bool,
 }
 
 #[tauri::command(async)]
@@ -73,31 +75,61 @@ fn press_key_combination(combination: KeyboardCombination) {
 
     if combination.hold_ctrl {
         enigo.key(Key::Control, Direction::Press).unwrap();
+        println!("Holding Ctrl");
     }
 
     if combination.hold_shift {
         enigo.key(Key::Shift, Direction::Press).unwrap();
+        println!("Holding Shift");
     }
 
     if combination.hold_alt {
         enigo.key(Key::Alt, Direction::Press).unwrap();
+        println!("Holding Alt");
     }
 
-    enigo
-        .key(Key::Other(combination.key_code), Direction::Click)
-        .unwrap();
+    if combination.use_unicode {
+        enigo
+            .key(Key::Unicode(combination.key_name), Direction::Click)
+            .unwrap();
+
+        println!("Pressed char \"{}\" through Unicode", combination.key_name);
+    } else {
+        enigo
+            .key(Key::Other(combination.key_code), Direction::Click)
+            .unwrap();
+
+        println!(
+            "Pressed key code \"{}\" through Other",
+            combination.key_code
+        );
+    }
 
     if combination.hold_ctrl {
         enigo.key(Key::Control, Direction::Release).unwrap();
+        println!("Releasing Ctrl");
     }
 
     if combination.hold_shift {
         enigo.key(Key::Shift, Direction::Release).unwrap();
+        println!("Releasing Shift");
     }
 
     if combination.hold_alt {
         enigo.key(Key::Alt, Direction::Release).unwrap();
+        println!("Releasing Alt");
     }
+}
+
+#[tauri::command(async)]
+fn press_a() {
+    let mut enigo = Enigo::new(&Settings::default()).unwrap();
+    enigo.key(Key::Control, Direction::Press).unwrap();
+
+    enigo.key(Key::Other(65), Direction::Click).unwrap();
+    println!("-----> DEBUG: Pressed A");
+
+    enigo.key(Key::Control, Direction::Release).unwrap();
 }
 
 fn main() {
@@ -108,7 +140,8 @@ fn main() {
             move_mouse_to,
             click,
             write,
-            press_key_combination
+            press_key_combination,
+            press_a
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
