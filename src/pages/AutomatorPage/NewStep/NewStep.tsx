@@ -18,6 +18,7 @@ import {
   WriteStep,
   ParseStringStep,
   SleepStep,
+  PressKeyboardStep,
 
   // statements
   CycleStep,
@@ -115,6 +116,15 @@ export const NewStep = () => {
           {
             stepType === 'sleep'
               ? <SleepStep
+                onClose={handleClose}
+                editingStep={editingStep}
+              />
+              : null
+          }
+
+          {
+            stepType === 'pressKeyboard'
+              ? <PressKeyboardStep
                 onClose={handleClose}
                 editingStep={editingStep}
               />

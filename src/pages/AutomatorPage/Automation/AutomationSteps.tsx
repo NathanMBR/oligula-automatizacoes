@@ -118,6 +118,21 @@ export const AutomationSteps = (props: AutomationStepsProps) => {
                       onRemove={onRemove}
                     />
 
+                  if (type === 'pressKeyboard')
+                    return <AutomationCard.PressKeyboard
+                      key={id}
+                      position={position}
+                      holdCtrl={step.data.holdCtrl}
+                      holdShift={step.data.holdShift}
+                      holdAlt={step.data.holdAlt}
+                      keyCode={step.data.keyCode}
+                      keyName={step.data.keyName}
+                      currentStepId={step.id}
+                      index={index}
+                      onEdit={onEdit}
+                      onRemove={onRemove}
+                    />
+
                   // statements
 
                   if (type === 'cycle')

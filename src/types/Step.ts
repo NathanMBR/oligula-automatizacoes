@@ -9,6 +9,7 @@ export type StepData =
   WriteStepData |
   ParseStringStepData |
   SleepStepData |
+  PressKeyboardStepData |
   CycleStepData |
   ConditionalStepData |
   SetVariableStepData |
@@ -53,6 +54,17 @@ export type SleepStepData = StepDefaultData & {
   type: 'sleep'
   data: {
     time: number
+  }
+}
+
+export type PressKeyboardStepData = StepDefaultData & {
+  type: 'pressKeyboard'
+  data: {
+    holdCtrl: boolean
+    holdShift: boolean
+    holdAlt: boolean
+    keyCode: number
+    keyName: string
   }
 }
 

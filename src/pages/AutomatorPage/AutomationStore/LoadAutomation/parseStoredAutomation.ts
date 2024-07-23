@@ -142,6 +142,44 @@ const validateSteps = (steps: unknown): boolean => {
         return false
     }
 
+    else if (stepType === 'pressKeyboard') {
+      if (!('holdCtrl' in step.data))
+        return false
+
+      if (typeof step.data.holdCtrl !== 'boolean')
+        return false
+
+      if (!('holdShift' in step.data))
+        return false
+
+      if (typeof step.data.holdShift !== 'boolean')
+        return false
+
+      if (!('holdAlt' in step.data))
+        return false
+
+      if (typeof step.data.holdAlt !== 'boolean')
+        return false
+
+      if (!('keyCode' in step.data))
+        return false
+
+      if (typeof step.data.keyCode !== 'number')
+        return false
+
+      if (!Number.isSafeInteger(step.data.keyCode))
+        return false
+
+      if (step.data.keyCode < 0)
+        return false
+
+      if (!('keyName' in step.data))
+        return false
+
+      if (typeof step.data.keyName !== 'string')
+        return false
+    }
+
     // statements
 
     else if (stepType === 'cycle') {

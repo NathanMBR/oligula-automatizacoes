@@ -108,6 +108,27 @@ export const runAutomationScript = async (data: RunAutomationData) => {
       continue
     }
 
+    if (step.type === 'pressKeyboard') {
+      console.log(`Running step "pressKeyboard" for key "${step.data.keyName}, with code "${step.data.keyCode}"`)
+
+      /* eslint-disable camelcase */
+      await invoke('press_key_combination',
+        {
+          combination: {
+            hold_ctrl: step.data.holdCtrl,
+            hold_shift: step.data.holdShift,
+            hold_alt: step.data.holdAlt,
+            key_code: step.data.keyCode,
+            key_name: step.data.keyName,
+            use_unicode: step.data.keyName.length === 1
+          }
+        }
+      )
+      /* eslint-enable camelcase */
+
+      continue
+    }
+
     // statements
 
     if (step.type === 'cycle') {

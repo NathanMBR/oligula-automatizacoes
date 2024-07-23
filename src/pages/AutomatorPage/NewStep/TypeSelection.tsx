@@ -34,7 +34,8 @@ export const TypeSelection = (props: TypeSelectionProps) => {
       'click',
       'write',
       'parseString',
-      'sleep'
+      'sleep',
+      'pressKeyboard'
     ],
 
     statements: [

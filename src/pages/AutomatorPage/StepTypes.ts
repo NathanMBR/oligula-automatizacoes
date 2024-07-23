@@ -8,7 +8,8 @@ import {
   IconRotateClockwise,
   IconArrowRampRight2,
   IconVariablePlus,
-  IconVariable
+  IconVariable,
+  IconKeyboard
 } from '@tabler/icons-react'
 
 import type { StepData } from '../../types'
@@ -43,6 +44,11 @@ export const StepTypes = {
   sleep: {
     title: 'Esperar',
     icon: IconHourglass
+  },
+
+  pressKeyboard: {
+    title: 'Pressionar teclas',
+    icon: IconKeyboard
   },
 
   // statements

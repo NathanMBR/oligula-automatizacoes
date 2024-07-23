@@ -4,6 +4,7 @@ export * from './ClickStep'
 export * from './WriteStep'
 export * from './ParseStringStep'
 export * from './SleepStep'
+export * from './PressKeyboardStep'
 
 // statements
 export * from './CycleStep'

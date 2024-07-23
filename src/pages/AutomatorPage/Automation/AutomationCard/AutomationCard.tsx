@@ -29,6 +29,7 @@ import type {
   WriteStepData,
   ParseStringStepData,
   SleepStepData,
+  PressKeyboardStepData,
 
   // statements
   CycleStepData,
@@ -41,6 +42,7 @@ import type {
   DestructVariableStepData
 } from '../../../../types'
 import { ensureCharactersLimit } from '../../../../helpers'
+import { KeyboardCombination } from '../../../../components'
 
 import { StepTypes } from '../../StepTypes'
 import { MinorSteps } from './MinorSteps'
@@ -258,6 +260,28 @@ export namespace AutomationCard {
     onEdit={props.onEdit}
     onRemove={props.onRemove}
     label={`durante ${(props.time / ONE_SECOND_IN_MS).toString().split('.').join(',')} segundo${props.time / ONE_SECOND_IN_MS === 1 ? '' : 's'}`}
+  />
+
+  export const PressKeyboard = (props: Required<Pick<AutomationCardProps, 'position' | 'onEdit' | 'currentStepId' | 'index' | 'onRemove'>> & PressKeyboardStepData['data']) => <AutomationCardBase
+    icon={<StepTypes.pressKeyboard.icon />}
+    title={StepTypes.pressKeyboard.title}
+    currentStepId={props.currentStepId}
+    position={props.position}
+    index={props.index}
+    onEdit={props.onEdit}
+    onRemove={props.onRemove}
+    label={
+      <Group gap='xs'>
+        <Text size='sm'>Pressionar {props.holdAlt || props.holdCtrl || props.holdShift ? 'a combinação de teclas' : 'a tecla'}</Text>
+
+        <KeyboardCombination
+          ctrl={props.holdCtrl}
+          shift={props.holdShift}
+          alt={props.holdAlt}
+          keyName={props.keyName}
+        />
+      </Group>
+    }
   />
 
   // statements
