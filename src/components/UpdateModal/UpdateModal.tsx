@@ -16,7 +16,7 @@ import {
   UpdatingBody,
   SuccessBody,
   FailureBody
-} from './bodies'
+} from './Bodies'
 
 export type UpdateModalProps = {
   isOpenExternally?: boolean
