@@ -10,25 +10,33 @@ Priority items are marked with an asterisk (\*).
 
 ## Automator
 
+### General
+
+- Migrate completely from crate `autopilot` to `enigo`
+
 ### Schema Saving System (SSS)
 
 - Confirm delete before executing
 - Load schema: Add message when no saved/valid schemas are found
 
+### Runner
+
+- Add highlight to running step
+- Add error modal if automation run fails
+- Add notification if automation run fails
+- Add notification when automation finishes run
+
 ### Steps
 
-- Add keyboard combination press step (for example, `Ctrl + Shift + K`)\*
-- Migrate completely from crate `autopilot` to `enigo`
 - Add variable: add support to list variables
 - Add while step
 - Add join string step
-- Add error modal for running steps
 - Add minimize app step
 - Check UI responsiveness
 - Merge `AutomationCard` options in a menu
+- Add "duplicate step" option
 - Move mouse: Add "smooth movement" option
-- Add notification when automation finishes run
-- Add notification if automation run fails
+- Keyboard press: add support to manually insert key
 
 ## Settings Menu
 
