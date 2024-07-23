@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use autopilot::{self, geometry::Point, mouse::Button};
-use enigo::{Enigo, Keyboard, Settings};
+use enigo::{Direction, Enigo, Key, Keyboard, Settings};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct MousePosition {
@@ -15,6 +15,14 @@ pub enum MouseButton {
     Left,
     Middle,
     Right,
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct KeyboardCombination {
+    hold_ctrl: bool,
+    hold_shift: bool,
+    hold_alt: bool,
+    key: char,
 }
 
 #[tauri::command(async)]
@@ -59,6 +67,39 @@ fn write(text: String) {
     enigo.text(&text).unwrap();
 }
 
+#[tauri::command(async)]
+fn press_key_combination(combination: KeyboardCombination) {
+    let mut enigo = Enigo::new(&Settings::default()).unwrap();
+
+    if combination.hold_ctrl {
+        enigo.key(Key::Control, Direction::Press).unwrap();
+    }
+
+    if combination.hold_shift {
+        enigo.key(Key::Shift, Direction::Press).unwrap();
+    }
+
+    if combination.hold_alt {
+        enigo.key(Key::Alt, Direction::Press).unwrap();
+    }
+
+    enigo
+        .key(Key::Unicode(combination.key), Direction::Click)
+        .unwrap();
+
+    if combination.hold_ctrl {
+        enigo.key(Key::Control, Direction::Release).unwrap();
+    }
+
+    if combination.hold_shift {
+        enigo.key(Key::Shift, Direction::Release).unwrap();
+    }
+
+    if combination.hold_alt {
+        enigo.key(Key::Alt, Direction::Release).unwrap();
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -66,7 +107,8 @@ fn main() {
             check_mouse_position,
             move_mouse_to,
             click,
-            write
+            write,
+            press_key_combination
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
