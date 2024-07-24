@@ -11,6 +11,10 @@ import {
   useEffect,
   useState
 } from 'react'
+import {
+  path,
+  shell
+} from '@tauri-apps/api'
 import { appWindow } from '@tauri-apps/api/window'
 
 import {
@@ -19,6 +23,7 @@ import {
 } from '../../layouts'
 import { PreloadContext } from '../../providers'
 import { UpdateModal } from '../../components'
+import { IconLogs } from '@tabler/icons-react'
 
 export const SettingsPage = () => {
   const { app } = useContext(PreloadContext)
@@ -30,6 +35,12 @@ export const SettingsPage = () => {
   const ONE_SECOND_IN_MS = 1_000
 
   const portugueseNumberFormatter = new Intl.NumberFormat('pt-br')
+
+  const handleLogsFolderOpening = async () => {
+    const logsFolderPath = await path.appLogDir()
+
+    await shell.open(logsFolderPath)
+  }
 
   useEffect(() => {
     appWindow.setTitle('Oligula Automatizações | Configurações')
@@ -97,6 +108,10 @@ export const SettingsPage = () => {
                 ]}
               />
             </Stack>
+          </Fieldset>
+
+          <Fieldset legend='Logs' p='lg'>
+            <Button leftSection={<IconLogs size={20} stroke={1.5} />} onClick={handleLogsFolderOpening}>Abrir pasta de logs</Button>
           </Fieldset>
         </Stack>
 
