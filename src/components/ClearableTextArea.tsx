@@ -1,4 +1,8 @@
 import {
+  useState,
+  type ReactNode
+} from 'react'
+import {
   Box,
   Button,
   CloseButton,
@@ -10,11 +14,9 @@ import {
   Tooltip,
   Transition
 } from '@mantine/core'
-import {
-  useState,
-  type ReactNode
-} from 'react'
 import { IconFileText } from '@tabler/icons-react'
+
+import { handleCatchError } from '../helpers'
 
 export type ClearableTextAreaProps = {
   label: string
@@ -61,7 +63,6 @@ export const ClearableTextArea = (props: ClearableTextAreaProps) => {
             ? <FileButton
               disabled={isReadingFile}
               onChange={file => {
-              /* eslint-disable no-console */
                 if (!file)
                   return
 
@@ -69,9 +70,8 @@ export const ClearableTextArea = (props: ClearableTextAreaProps) => {
 
                 file.text()
                   .then(fileText => onChange(fileText))
-                  .catch(console.error)
+                  .catch(error => handleCatchError(error, 'Failed to transform file to text:'))
                   .finally(() => setIsReadingFile(false))
-              /* eslint-enable no-console */
               }}
             >
               {

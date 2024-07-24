@@ -1,10 +1,4 @@
 import {
-  createContext,
-  useState,
-  useEffect,
-  type PropsWithChildren
-} from 'react'
-import {
   Center,
   Loader
 } from '@mantine/core'
@@ -15,13 +9,21 @@ import {
   os,
   fs
 } from '@tauri-apps/api'
+import {
+  createContext,
+  useState,
+  useEffect,
+  type PropsWithChildren
+} from 'react'
+import * as tauriLogger from 'tauri-plugin-log-api'
+
+import { handleCatchError } from '../helpers'
 
 type AppSettingsData = {
   showUpdateNotification: boolean
   timeBetweenStepsInMs: number
 }
 
-/* eslint-disable no-console */
 const defaultPreloadData = {
   os: {
     type: 'unknown' as os.OsType | 'unknown'
@@ -49,8 +51,7 @@ const defaultPreloadData = {
 
           return true
         } catch (error) {
-          console.error('Failed to execute update:')
-          console.error(error)
+          handleCatchError(error, 'Failed to execute update:')
 
           return false
         }
@@ -58,7 +59,6 @@ const defaultPreloadData = {
     }
   }
 }
-/* eslint-enable no-console */
 
 export const PreloadContext = createContext(defaultPreloadData)
 
@@ -79,14 +79,12 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
 
   const CONFIG_FILE = 'settings.json'
 
-  /* eslint-disable no-console */
   const loadOsType = async () => {
     try {
       const currentOsType = await os.type()
       setOsType(currentOsType)
     } catch (error) {
-      console.error('Failed to load OS type:')
-      console.error(error)
+      handleCatchError(error, 'Failed to load OS type:')
     }
   }
 
@@ -95,8 +93,7 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
       const version = await app.getVersion()
       setAppVersion(version)
     } catch (error) {
-      console.error('Failed to load app version:')
-      console.error(error)
+      handleCatchError(error, 'Failed to load app version:')
     }
   }
 
@@ -108,7 +105,7 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
 
       const doesConfigFileExist = await fs.exists(CONFIG_FILE, { dir: BaseDirectory.AppConfig })
       if (!doesConfigFileExist) {
-        console.log('Generating default settings file...')
+        tauriLogger.trace('Generating default settings file...')
 
         await fs.writeTextFile(
           {
@@ -121,25 +118,24 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
           }
         )
 
-        console.log('Settings file generated successfully!')
+        tauriLogger.trace('Settings file generated successfully!')
 
         return
       }
 
-      console.log('Loading existent settings file...')
+      tauriLogger.trace('Loading existent settings file...')
 
       const rawSettings = await fs.readTextFile(CONFIG_FILE, { dir: BaseDirectory.AppConfig })
       const settings = JSON.parse(rawSettings) as AppSettingsData
       setAppSettingsData(settings)
     } catch (error) {
-      console.error('Failed to load app settings data:')
-      console.error(error)
+      handleCatchError(error, 'Failed to load app settings data:')
     }
   }
 
   const checkUpdate = async () => {
     try {
-      console.log('Checking for updates...')
+      tauriLogger.trace('Checking for updates...')
 
       const {
         shouldUpdate,
@@ -147,21 +143,19 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
       } = await updater.checkUpdate()
 
       if (!shouldUpdate)
-        return console.log('No updates found.')
+        return tauriLogger.trace('No updates found.')
 
-      console.log('Found update!')
+      tauriLogger.trace('Found update!')
       if (manifest) {
-        console.log(`Version: ${manifest.version}`)
-        console.log(`Release date: ${manifest.date}`)
+        tauriLogger.trace(`Version: ${manifest.version}`)
+        tauriLogger.trace(`Release date: ${manifest.date}`)
       }
 
       setAppUpdateAvailable(shouldUpdate)
     } catch (error) {
-      console.error('Failed to check for updates:')
-      console.error(error)
+      handleCatchError(error, 'Failed to check for updates:')
     }
   }
-  /* eslint-enable no-console */
 
   useEffect(
     () => {
@@ -217,10 +211,7 @@ export const PreloadProvider = (props: PreloadProviderProps) => {
 
               return true
             } catch (error) {
-              /* eslint-disable no-console */
-              console.error('Failed to set app settings:')
-              console.error(error)
-              /* eslint-enable no-console */
+              handleCatchError(error, 'Failed to set app settings:')
 
               return false
             }

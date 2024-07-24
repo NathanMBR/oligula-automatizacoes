@@ -20,6 +20,7 @@ import {
 
 import { FAB } from '../../../components'
 import { AutomationContext } from '../../../providers'
+import { handleCatchError } from '../../../helpers'
 
 import { LoadAutomation } from './LoadAutomation'
 import { SaveAutomation } from './SaveAutomation'
@@ -45,10 +46,7 @@ export const AutomationStore = () => {
 
       await shell.open(automationSchemasDir)
     } catch (error) {
-      /* eslint-disable no-console */
-      console.error('Failed to open schemas folder:')
-      console.error(error)
-      /* eslint-enable no-console */
+      handleCatchError(error, 'Failed to open schemas folder:')
     }
   }
 

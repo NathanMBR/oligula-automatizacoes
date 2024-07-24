@@ -11,6 +11,7 @@ import {
   PreloadContext
 } from '../../../providers'
 import { FAB } from '../../../components'
+import { handleCatchError } from '../../../helpers'
 
 import { runAutomationScript } from './runAutomationScript'
 import type { AutomatorPageParams } from '../AutomatorPage'
@@ -32,7 +33,6 @@ export const RunAutomation = () => {
   const isDisabled = isHidden || isRunningAutomation
 
   const handleAutomationRun = () => {
-    /* eslint-disable no-console */
     setIsRunningAutomation(true)
 
     const automationData = {
@@ -44,9 +44,8 @@ export const RunAutomation = () => {
       ...automationData,
       globalTimeBetweenStepsInMs: app.settings.data.timeBetweenStepsInMs
     })
-      // .catch(console.error)
+      .catch(error => handleCatchError(error, 'Error running automation:'))
       .finally(() => setIsRunningAutomation(false))
-    /* eslint-enable no-console */
   }
 
   return (

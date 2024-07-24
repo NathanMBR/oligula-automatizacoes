@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api'
+import * as tauriLogger from 'tauri-plugin-log-api'
 
 import {
   MouseButton,
@@ -15,7 +16,6 @@ export type RunAutomationData = Pick<AutomationData, 'steps' | 'variables'> & {
 }
 
 /* eslint-disable no-await-in-loop */
-/* eslint-disable no-console */
 export const runAutomationScript = async (data: RunAutomationData) => {
   const {
     globalTimeBetweenStepsInMs,
@@ -36,14 +36,14 @@ export const runAutomationScript = async (data: RunAutomationData) => {
     // actions
 
     if (step.type === 'move') {
-      console.log(`Running step "move" to position x: ${step.data.x}, y: ${step.data.y}`)
+      tauriLogger.trace(`Running step "move" to position x: ${step.data.x}, y: ${step.data.y}`)
 
       await invoke('move_mouse_to', { position: step.data })
       continue
     }
 
     if (step.type === 'click') {
-      console.log(`Running step "click" with button ${step.data.button}`)
+      tauriLogger.trace(`Running step "click" with button ${step.data.button}`)
 
       await invoke('click', { button: MouseButton[step.data.button] })
       continue
@@ -55,9 +55,9 @@ export const runAutomationScript = async (data: RunAutomationData) => {
         : step.data.text
 
       if (typeof textToWrite !== 'string')
-        return console.error(`Unexpected Error: Variable "${step.data.readFrom}" isn't a text (got ${typeof textToWrite})`)
+        return tauriLogger.error(`Unexpected Error: Variable "${step.data.readFrom}" isn't a text (got ${typeof textToWrite})`)
 
-      console.log(`Running step "write" with text "${ensureCharactersLimit(textToWrite, 50)}"`)
+      tauriLogger.trace(`Running step "write" with text "${ensureCharactersLimit(textToWrite, 50)}"`)
 
       await invoke('write', { text: textToWrite })
 
@@ -78,16 +78,16 @@ export const runAutomationScript = async (data: RunAutomationData) => {
         textToParse = parseString
       else {
         if (!hasVariable(readFrom))
-          return console.error(`Unexpected Error: Variable "${readFrom}" not found`)
+          return tauriLogger.error(`Unexpected Error: Variable "${readFrom}" not found`)
 
         const variable = getVariable(readFrom)!
         if (typeof variable.value !== 'string')
-          return console.error(`Unexpected Error: Variable "${readFrom}" isn't a text (got ${typeof variable.value})`)
+          return tauriLogger.error(`Unexpected Error: Variable "${readFrom}" isn't a text (got ${typeof variable.value})`)
 
         textToParse = variable.value
       }
 
-      console.log(`Running step "parseString" with divider "${ensureCharactersLimit(divider, 50)}" and text "${ensureCharactersLimit(textToParse, 50)}"`)
+      tauriLogger.trace(`Running step "parseString" with divider "${ensureCharactersLimit(divider, 50)}" and text "${ensureCharactersLimit(textToParse, 50)}"`)
 
       const parsedText = textToParse.split(divider)
       setVariable(saveAs, {
@@ -100,7 +100,7 @@ export const runAutomationScript = async (data: RunAutomationData) => {
     }
 
     if (step.type === 'sleep') {
-      console.log(`Running step "sleep" during ${step.data.time} ms`)
+      tauriLogger.trace(`Running step "sleep" during ${step.data.time} ms`)
 
       if (step.data.time > 0)
         await sleep(step.data.time)
@@ -109,7 +109,7 @@ export const runAutomationScript = async (data: RunAutomationData) => {
     }
 
     if (step.type === 'pressKeyboard') {
-      console.log(`Running step "pressKeyboard" for key "${step.data.keyName}, with code "${step.data.keyCode}"`)
+      tauriLogger.trace(`Running step "pressKeyboard" for key "${step.data.keyName}, with code "${step.data.keyCode}"`)
 
       /* eslint-disable camelcase */
       await invoke('press_key_combination',
@@ -134,12 +134,12 @@ export const runAutomationScript = async (data: RunAutomationData) => {
     if (step.type === 'cycle') {
       const iterable = getVariable(step.data.iterable)
       if (!iterable)
-        return console.error(`Unexpected Error: Variable "${step.data.iterable}" not found`)
+        return tauriLogger.error(`Unexpected Error: Variable "${step.data.iterable}" not found`)
 
       if (!Array.isArray(iterable.value))
-        return console.error(`Unexpected Error: Variable "${step.data.iterable}" isn't a list (got ${typeof iterable.value})`)
+        return tauriLogger.error(`Unexpected Error: Variable "${step.data.iterable}" isn't a list (got ${typeof iterable.value})`)
 
-      console.log(`Running step "cycle" with iterable "${step.data.iterable}"`)
+      tauriLogger.trace(`Running step "cycle" with iterable "${step.data.iterable}"`)
 
       for (const item of iterable.value) {
         const newVariable: Variables[string] = {
@@ -162,7 +162,7 @@ export const runAutomationScript = async (data: RunAutomationData) => {
     }
 
     if (step.type === 'conditional') {
-      console.log('Running step "conditional"')
+      tauriLogger.trace('Running step "conditional"')
 
       const {
         leftSide,
@@ -217,7 +217,7 @@ export const runAutomationScript = async (data: RunAutomationData) => {
     // variables
 
     if (step.type === 'setVariable') {
-      console.log(`Running step "setVariable" with variable name "${step.data.saveAs}" and value "${step.data.value}"`)
+      tauriLogger.trace(`Running step "setVariable" with variable name "${step.data.saveAs}" and value "${step.data.value}"`)
 
       setVariable(step.data.saveAs, {
         ownerId: step.id,
@@ -229,14 +229,14 @@ export const runAutomationScript = async (data: RunAutomationData) => {
     }
 
     if (step.type === 'destructVariable') {
-      console.log(`Running step "destructVariable" with list variable "${step.data.readFrom}", index "${step.data.index}" and value variable "${step.data.saveAs}"`)
+      tauriLogger.trace(`Running step "destructVariable" with list variable "${step.data.readFrom}", index "${step.data.index}" and value variable "${step.data.saveAs}"`)
 
       const variable = getVariable(step.data.readFrom)
       if (!variable)
-        return console.error(`Unexpected Error: Variable "${step.data.readFrom}" not found`)
+        return tauriLogger.error(`Unexpected Error: Variable "${step.data.readFrom}" not found`)
 
       if (variable.type !== 'list' || !Array.isArray(variable.value))
-        return console.error(`Unexpected Error: Variable "${step.data.readFrom}" isn't a list (got ${typeof variable.value})`)
+        return tauriLogger.error(`Unexpected Error: Variable "${step.data.readFrom}" isn't a list (got ${typeof variable.value})`)
 
       const destructuredValue = variable.value[step.data.index]
 
@@ -250,5 +250,4 @@ export const runAutomationScript = async (data: RunAutomationData) => {
     }
   }
 }
-/* eslint-enable no-console */
 /* eslint-enable no-await-in-loop */

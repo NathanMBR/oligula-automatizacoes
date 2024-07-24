@@ -15,6 +15,7 @@ import {
   useEffect
 } from 'react'
 import { useParams } from 'react-router-dom'
+import * as tauriLogger from 'tauri-plugin-log-api'
 
 import {
   AutomationContext,
@@ -49,9 +50,8 @@ export const Automation = () => {
   const expandedStepId = Number(rawExpandedStepId)
 
   const loadExpandedStep = (id: StepData['id']) => {
-    /* eslint-disable no-console */
     if (Number.isNaN(id)) {
-      console.error(`Unexpected Error: Expected valid step id (got ${rawExpandedStepId})`)
+      tauriLogger.error(`Unexpected Error: Expected valid step id (got ${rawExpandedStepId})`)
       return null
     }
 
@@ -60,10 +60,9 @@ export const Automation = () => {
 
     const step = getStep(id)
     if (!step) {
-      console.error(`Unexpected Error: Step with id ${id} not found`)
+      tauriLogger.error(`Unexpected Error: Step with id ${id} not found`)
       return null
     }
-    /* eslint-enable no-console */
 
     return step
   }
@@ -73,8 +72,7 @@ export const Automation = () => {
       return null
 
     if (!('steps' in step.data)) {
-      // eslint-disable-next-line no-console
-      console.error(`Unexpected Error: Step with id ${step.id} has no children steps`)
+      tauriLogger.error(`Unexpected Error: Step with id ${step.id} has no children steps`)
       return null
     }
 

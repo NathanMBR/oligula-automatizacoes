@@ -21,6 +21,7 @@ import {
 import { fs } from '@tauri-apps/api'
 
 import { AutomationContext } from '../../../../providers'
+import { handleCatchError } from '../../../../helpers'
 
 import { parseStoredAutomation } from './parseStoredAutomation'
 import type { StoredAutomation } from '../StoredAutomation'
@@ -136,10 +137,7 @@ export const LoadAutomation = (props: LoadAutomationProps) => {
 
         setAutomations(automations)
       } catch (error) {
-        /* eslint-disable no-console */
-        console.error('Failed to load stored automations:', error)
-        console.error(error)
-        /* eslint-enable no-console */
+        handleCatchError(error, 'Failed to load stored automations:')
       }
     }
 
