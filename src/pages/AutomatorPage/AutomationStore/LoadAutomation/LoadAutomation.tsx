@@ -155,7 +155,7 @@ export const LoadAutomation = (props: LoadAutomationProps) => {
   return (
     <>
       {
-        automations.length >= 0
+        automations.length > 0
           ? <ScrollArea
             h={spacingHeight}
             scrollHideDelay={250}
