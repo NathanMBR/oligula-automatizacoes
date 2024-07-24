@@ -18,7 +18,8 @@
     "clsx": "^2.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.23.1"
+    "react-router-dom": "^6.23.1",
+    "tauri-plugin-log-api": "github:tauri-apps/tauri-plugin-log#v1"
   },
   "devDependencies": {
     "@eslint/js": "^9.3.0",
