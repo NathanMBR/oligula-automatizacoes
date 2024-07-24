@@ -121,17 +121,6 @@ fn press_key_combination(combination: KeyboardCombination) {
     }
 }
 
-#[tauri::command(async)]
-fn press_a() {
-    let mut enigo = Enigo::new(&Settings::default()).unwrap();
-    enigo.key(Key::Control, Direction::Press).unwrap();
-
-    enigo.key(Key::Other(65), Direction::Click).unwrap();
-    println!("-----> DEBUG: Pressed A");
-
-    enigo.key(Key::Control, Direction::Release).unwrap();
-}
-
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -140,8 +129,7 @@ fn main() {
             move_mouse_to,
             click,
             write,
-            press_key_combination,
-            press_a
+            press_key_combination
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
