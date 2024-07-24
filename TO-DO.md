@@ -2,12 +2,6 @@
 
 Priority items are marked with an asterisk (\*).
 
-## Logging
-
-### General
-
-- Find a way to log messages inside a file (check `tauri-plugin-log` crate/package)\*
-
 ## Automator
 
 ### General
@@ -44,7 +38,6 @@ Priority items are marked with an asterisk (\*).
 
 - Add option to disable notification when automation finishes or fails
 - Move mouse: add "capture delay" setting (default to 5s)
-- Minimum delay between steps should be 0.1s
 
 ## Spreadsheet Formatter
 
