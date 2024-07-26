@@ -59,9 +59,19 @@ export const runAutomationScript = async (data: RunAutomationData) => {
 
       tauriLogger.trace(`Running step "write" with text "${ensureCharactersLimit(textToWrite, 50)}"`)
 
-      await invoke('write', { text: textToWrite })
+      if (!textToWrite.includes('\n')) {
+        await invoke('write', { text: textToWrite })
+        continue
+      }
 
-      continue
+      const lines = textToWrite.split('\n')
+      for (const line of lines) {
+        if (lines.indexOf(line) > 0)
+          await invoke('write', { text: '\n' })
+
+        if (line.length > 0)
+          await invoke('write', { text: line })
+      }
     }
 
     if (step.type === 'parseString') {
